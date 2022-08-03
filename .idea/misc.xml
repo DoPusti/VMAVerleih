@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_main.xml" value="0.13855116514690982" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/drawable/ic_baseline_supervised_user_circle_24.xml" value="0.274" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_add_items.xml" value="0.2140625" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_edit_profile.xml" value="0.28489583333333335" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_items.xml" value="0.2708333333333333" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_sign_in.xml" value="0.22" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_sign_up.xml" value="0.14351851851851852" />
       </map>
