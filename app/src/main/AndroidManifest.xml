@@ -15,15 +15,25 @@
         tools:targetApi="31">
         <activity
             android:name=".AddItemsActivity"
+            android:theme="@style/AddItemNoActionBar"
+            android:label="ADD ITEMS"
+            tools:replace="screenOrientation"
+            android:screenOrientation="fullSensor"
             android:exported="false" />
         <activity
             android:name=".ItemsActivity"
+            android:theme="@style/AddItemNoActionBar"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".EditProfileActivity"
+            android:theme="@style/AddItemNoActionBar"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".SignInActivity"
+            android:theme="@style/AddItemNoActionBar"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -30,4 +30,22 @@
         <item name="android:textSize">14sp</item>
         <item name="android:singleLine">true</item>
     </style>
+    <style name="CustomToolbarStyle" >
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:colorControlNormal">#FFFFFF</item>
+    </style>
+    <style name="AddItemNoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#606C38</item>
+        <item name="colorPrimaryVariant">#283618</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorAccent">#FEFAE0</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#606C38</item>
+        <item name="colorSecondaryVariant">#283618</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
 </resources>
