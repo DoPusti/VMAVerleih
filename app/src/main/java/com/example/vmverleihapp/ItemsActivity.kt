@@ -14,7 +14,7 @@ class ItemsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbarItems)
         setContentView(R.layout.activity_items)
-         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbarItems.setNavigationOnClickListener {
             onBackPressed()
         }
