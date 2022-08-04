@@ -79,69 +79,48 @@
                 android:layout_height="200dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/shape_image_view_border"
-                android:padding="@dimen/add_screen_place_image_padding"
+                android:padding="2dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_screen_image_placeholder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSelectCurrentLocation" />
+                app:layout_constraintTop_toBottomOf="@+id/tilDescription" />
 
             <TextView
                 android:id="@+id/tvAddImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/add_screen_text_add_image_marginTop"
+                android:layout_marginTop="96dp"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center"
-                android:padding="@dimen/add_screen_text_add_image_padding"
-                android:text="@string/text_add_image"
-                android:textColor="@color/lightGreen"
-                android:textSize="@dimen/add_screen_text_add_image_textSize"
+                android:padding="10dp"
+                android:text="Bild hinzufügen"
+                android:textColor="#606C38"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/tvADDQR"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.45"
                 app:layout_constraintStart_toEndOf="@+id/ivPlaceImage"
-                app:layout_constraintTop_toBottomOf="@+id/tvSelectCurrentLocation"
+                app:layout_constraintTop_toBottomOf="@+id/tilDescription"
                 app:layout_constraintVertical_bias="0.019" />
-
-
-            <TextView
-                android:id="@+id/tvADDQR"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/add_read_qr_code"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="@dimen/add_screen_text_add_image_padding"
-                android:text="@string/text_add_QR"
-                android:textColor="@color/lightGreen"
-                android:textSize="@dimen/add_screen_text_add_image_textSize"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/buSave"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.533"
-                app:layout_constraintStart_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivPlaceImage"
-                app:layout_constraintVertical_bias="0.297" />
 
             <Button
                 android:id="@+id/buSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/add_screen_btn_save_marginTop"
+                android:layout_marginTop="24dp"
                 android:background="@drawable/shape_button_rounded"
                 android:gravity="center"
-                android:paddingTop="@dimen/add_screen_btn_save_paddingTopBottom"
-                android:paddingBottom="@dimen/add_screen_btn_save_paddingTopBottom"
-                android:text="@string/btn_text_save"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="SPEICHERN"
                 android:textColor="@color/white"
-                android:textSize="@dimen/btn_text_size"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvADDQR" />
+                app:layout_constraintTop_toBottomOf="@+id/ivPlaceImage" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
