@@ -5,24 +5,46 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import com.example.vmverleihapp.databinding.ActivityMainBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+
+    private lateinit var binding : ActivityMainBinding
+
     private var db : FirebaseDatabase = FirebaseDatabase.getInstance()
     private var root : DatabaseReference = db.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        fabProfile.setOnClickListener{
-            val intent = Intent(this, EditProfileActivity::class.java)
-            @Suppress("DEPRECATION")
-            startActivityForResult(intent,EDIT_PROFILE_ACTIVITY_REQUEST_CODE)
-        }
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.mainToolBar)
+
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        val intent = Intent(this, EditProfileActivity::class.java)
+        @Suppress("DEPRECATION")
+        startActivityForResult(intent,EDIT_PROFILE_ACTIVITY_REQUEST_CODE)
+
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
@@ -33,6 +55,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("Activity", "Abgebrochen oder zurück gedrückt")
             }
         }
+
 
     }
     companion object {
