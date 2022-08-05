@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "201075313777",
+    "firebase_url": "https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "vmaverleihapp",
     "storage_bucket": "vmaverleihapp.appspot.com"
   },
