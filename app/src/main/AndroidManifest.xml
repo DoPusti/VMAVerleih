@@ -16,20 +16,23 @@
         <activity
             android:name=".AddItemsActivity"
             android:theme="@style/AddItemNoActionBar"
+            android:parentActivityName=".EditProfileActivity"
             android:label="ADD ITEMS"
             tools:replace="screenOrientation"
             android:screenOrientation="fullSensor"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ItemsActivity"
             android:theme="@style/AddItemNoActionBar"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:parentActivityName=".EditProfileActivity"
+            android:exported="true" />
         <activity
             android:name=".EditProfileActivity"
             android:theme="@style/AddItemNoActionBar"
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:parentActivityName=".MainActivity"
+            android:exported="true" />
         <activity
             android:name=".SignInActivity"
             android:theme="@style/AddItemNoActionBar"

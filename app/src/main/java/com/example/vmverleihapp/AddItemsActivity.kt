@@ -12,10 +12,11 @@ class AddItemsActivity : AppCompatActivity() {
         setSupportActionBar(toolbarAddItem)
         setContentView(R.layout.activity_add_items)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbarAddItem.setNavigationOnClickListener {
             onBackPressed()
         }
-        fabAddItem.setOnClickListener {
+        buSave.setOnClickListener {
             val intent = Intent(this@AddItemsActivity,EditProfileActivity::class.java)
             @Suppress("DEPRECATION")
             startActivity(intent)

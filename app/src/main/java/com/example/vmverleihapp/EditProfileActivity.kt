@@ -23,6 +23,11 @@ class EditProfileActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             startActivityForResult(intent, ITEM_VIEW_REQUEST_CODE)
         }
+        buToMain.setOnClickListener{
+            val intent = Intent(this@EditProfileActivity,MainActivity::class.java )
+            @Suppress("DEPRECATION")
+            startActivity(intent)
+        }
 
 
     }
