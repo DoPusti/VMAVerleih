@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import kotlinx.android.synthetic.main.activity_items.*
 
 class ItemsActivity : AppCompatActivity() {
@@ -49,9 +50,13 @@ class ItemsActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        val user = userSnapshot.getValue(User::class.java)
-                        if(user!!.user == firebaseAuth.currentUser.toString()) {
-                            userArrayList.add(user!!)
+                        //val user = userSnapshot.getValue(User::class.java)
+                        val userID = userSnapshot.getValue(UserAuth::class.java)
+                        if (userID!!.user == firebaseAuth.currentUser.toString()) {
+                            val user = User(userID!!.name,userID!!.description)
+                            if (user != null) {
+                                userArrayList.add(user)
+                            }
                         }
                     }
                     userRecyclerView.adapter = MyAdapter(userArrayList)
