@@ -1,12 +1,10 @@
-package com.example.vmverleihapp.adapter
+package com.example.vmverleihapp
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vmverleihapp.R
-import com.example.vmverleihapp.User
 
 class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
@@ -24,7 +22,7 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
         val currentitem = userList[position]
 
         holder.name.text = currentitem.name
-        holder.beschreibung.text = currentitem.description
+        holder.description.text = currentitem.description
 
     }
 
@@ -36,8 +34,8 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
 
     class MyViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        val name : TextView = itemView.findViewById(R.id.tvName)
-        val beschreibung : TextView = itemView.findViewById(R.id.tvBeschreibung)
+        val name : TextView = itemView.findViewById(R.id.tvname)
+        val description : TextView = itemView.findViewById(R.id.tvDescription)
 
     }
 

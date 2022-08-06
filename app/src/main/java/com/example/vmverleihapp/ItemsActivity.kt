@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vmverleihapp.adapter.MyAdapter
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_items.*
 
@@ -18,14 +17,9 @@ class ItemsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSupportActionBar(toolbarItems)
         setContentView(R.layout.activity_items)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbarItems.setNavigationOnClickListener {
-            onBackPressed()
-        }
 
-        userRecyclerView = findViewById(R.id.rvItemList)
+        userRecyclerView = findViewById(R.id.userList)
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf<User>()
@@ -60,7 +54,6 @@ class ItemsActivity : AppCompatActivity() {
                         userArrayList.add(user!!)
 
                     }
-
                     userRecyclerView.adapter = MyAdapter(userArrayList)
 
 
