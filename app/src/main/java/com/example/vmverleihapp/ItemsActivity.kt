@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vmverleihapp.RealtimeDatabases.FireBaseHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
@@ -27,6 +28,7 @@ class ItemsActivity : AppCompatActivity() {
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf<User>()
         firebaseAuth = FirebaseAuth.getInstance()
+        val fbHandler = FireBaseHandler()
         getUserData()
 
 
@@ -50,7 +52,6 @@ class ItemsActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        //val user = userSnapshot.getValue(User::class.java)
                         val userID = userSnapshot.getValue(UserAuth::class.java)
                         if (userID!!.user == firebaseAuth.currentUser.toString()) {
                             val user = User(userID!!.name,userID!!.description)
@@ -60,8 +61,6 @@ class ItemsActivity : AppCompatActivity() {
                         }
                     }
                     userRecyclerView.adapter = MyAdapter(userArrayList)
-
-
                 }
 
             }
