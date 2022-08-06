@@ -2,14 +2,20 @@ package com.example.vmverleihapp
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.example.vmverleihapp.ItemsActivity.Companion.ITEM_ADD_REQUEST_CODE
-import kotlinx.android.synthetic.main.activity_edit_profile.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.vmverleihapp.adapter.MyAdapter
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_items.*
 
 class ItemsActivity : AppCompatActivity() {
+    private lateinit var dbref: DatabaseReference
+    private lateinit var userRecyclerView: RecyclerView
+    private lateinit var userArrayList: ArrayList<User>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbarItems)
@@ -18,13 +24,59 @@ class ItemsActivity : AppCompatActivity() {
         toolbarItems.setNavigationOnClickListener {
             onBackPressed()
         }
+
+        userRecyclerView = findViewById(R.id.rvItemList)
+        userRecyclerView.layoutManager = LinearLayoutManager(this)
+        userRecyclerView.setHasFixedSize(true)
+        userArrayList = arrayListOf<User>()
+        getUserData()
+
+
+
         fabAddItem.setOnClickListener {
-            val intent = Intent(this@ItemsActivity,AddItemsActivity::class.java)
+            val intent = Intent(this@ItemsActivity, AddItemsActivity::class.java)
             @Suppress("DEPRECATION")
             startActivityForResult(intent, ITEM_ADD_REQUEST_CODE)
         }
 
     }
+
+    private fun getUserData() {
+
+        dbref =
+            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Users")
+
+        dbref.addValueEventListener(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                if (snapshot.exists()) {
+
+                    for (userSnapshot in snapshot.children) {
+
+
+                        val user = userSnapshot.getValue(User::class.java)
+                        userArrayList.add(user!!)
+
+                    }
+
+                    userRecyclerView.adapter = MyAdapter(userArrayList)
+
+
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
@@ -36,6 +88,7 @@ class ItemsActivity : AppCompatActivity() {
         }
 
     }
+
     companion object {
         private const val ITEM_ADD_REQUEST_CODE = 3
 
