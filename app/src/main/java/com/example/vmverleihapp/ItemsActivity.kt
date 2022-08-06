@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_items.*
 
@@ -14,6 +15,7 @@ class ItemsActivity : AppCompatActivity() {
     private lateinit var dbref: DatabaseReference
     private lateinit var userRecyclerView: RecyclerView
     private lateinit var userArrayList: ArrayList<User>
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +25,7 @@ class ItemsActivity : AppCompatActivity() {
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf<User>()
+        firebaseAuth = FirebaseAuth.getInstance()
         getUserData()
 
 
@@ -44,15 +47,12 @@ class ItemsActivity : AppCompatActivity() {
         dbref.addValueEventListener(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-
                 if (snapshot.exists()) {
-
                     for (userSnapshot in snapshot.children) {
-
-
                         val user = userSnapshot.getValue(User::class.java)
-                        userArrayList.add(user!!)
-
+                        if(user!!.user == firebaseAuth.currentUser.toString()) {
+                            userArrayList.add(user!!)
+                        }
                     }
                     userRecyclerView.adapter = MyAdapter(userArrayList)
 

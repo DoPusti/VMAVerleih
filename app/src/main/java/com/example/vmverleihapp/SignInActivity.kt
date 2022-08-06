@@ -2,10 +2,12 @@ package com.example.vmverleihapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.vmverleihapp.databinding.ActivitySignInBinding
 import com.google.firebase.auth.FirebaseAuth
+import kotlin.math.log
 
 class SignInActivity : AppCompatActivity() {
 
@@ -51,6 +53,7 @@ class SignInActivity : AppCompatActivity() {
 
         if(firebaseAuth.currentUser != null){
             val intent = Intent(this, MainActivity::class.java)
+            Log.i("UserSignIn", firebaseAuth.currentUser.toString())
             startActivity(intent)
         }
     }
