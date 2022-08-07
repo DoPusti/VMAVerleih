@@ -47,8 +47,8 @@ class ItemsActivity : AppCompatActivity() {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
                         val userID = userSnapshot.getValue(UserAuth::class.java)
-                        if (userID!!.user == firebaseAuth.currentUser.toString()) {
-                            val user = User(userID!!.name,userID!!.description)
+                        if (userID!!.mail == firebaseAuth.currentUser!!.email.toString()) {
+                            val user = User(userID!!.name,userID!!.description, userID!!.status)
                             if (user != null) {
                                 userArrayList.add(user)
                             }

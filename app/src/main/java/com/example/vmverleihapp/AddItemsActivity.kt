@@ -1,6 +1,6 @@
 package com.example.vmverleihapp
 
-import android.content.ClipData
+
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_add_items.*
-import kotlinx.android.synthetic.main.activity_items.*
+
 
 class AddItemsActivity : AppCompatActivity() {
     private lateinit var database : FirebaseDatabase
@@ -40,12 +40,15 @@ class AddItemsActivity : AppCompatActivity() {
 
     }
     private fun sendData() {
-        var name = etTitle.text.toString().trim()
-        var description = etDescription.text.toString().trim()
-        var user = firebaseAuth.currentUser.toString()
+        val name = etTitle.text.toString().trim()
+        val description = etDescription.text.toString().trim()
+        val user = firebaseAuth.currentUser.toString()
+        val email = firebaseAuth.currentUser!!.email.toString()
+        val imageUri = ""
+        val status = "Verfügbar"
         if(name.isNotEmpty() && description.isNotEmpty()) {
-            var model = DatabaseModel(name, description, user)
-            var id = referance.push().key
+            val model = DatabaseModel(name, description, user, email,imageUri, status)
+            val id = referance.push().key
             referance.child(id!!).setValue(model)
         }
         else {

@@ -23,6 +23,8 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
 
         holder.name.text = currentitem.name
         holder.beschreibung.text = currentitem.description
+        holder.status.text = currentitem.status
+
 
     }
 
@@ -36,6 +38,7 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
 
         val name : TextView = itemView.findViewById(R.id.tvname)
         val beschreibung : TextView = itemView.findViewById(R.id.tvDescription)
+        val status : TextView = itemView.findViewById(R.id.tvStatus)
 
     }
 
