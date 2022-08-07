@@ -7,10 +7,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vmverleihapp.RealtimeDatabases.FireBaseHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import kotlinx.android.synthetic.main.activity_items.*
 
 class ItemsActivity : AppCompatActivity() {
@@ -28,11 +26,8 @@ class ItemsActivity : AppCompatActivity() {
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf<User>()
         firebaseAuth = FirebaseAuth.getInstance()
-        val fbHandler = FireBaseHandler()
+
         getUserData()
-
-
-
         fabAddItem.setOnClickListener {
             val intent = Intent(this@ItemsActivity, AddItemsActivity::class.java)
             @Suppress("DEPRECATION")
@@ -40,7 +35,6 @@ class ItemsActivity : AppCompatActivity() {
         }
 
     }
-
     private fun getUserData() {
 
         dbref =
@@ -64,15 +58,12 @@ class ItemsActivity : AppCompatActivity() {
                 }
 
             }
-
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
-
-
         })
-
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
