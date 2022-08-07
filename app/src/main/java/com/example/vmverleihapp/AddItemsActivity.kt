@@ -1,5 +1,6 @@
 package com.example.vmverleihapp
 
+import android.content.ClipData
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -32,7 +33,7 @@ class AddItemsActivity : AppCompatActivity() {
         referance = database.getReference("Users")
         buSave.setOnClickListener {
             sendData()
-            val intent = Intent(this@AddItemsActivity,EditProfileActivity::class.java)
+            val intent = Intent(this@AddItemsActivity,ItemsActivity::class.java)
             @Suppress("DEPRECATION")
             startActivity(intent)
         }
