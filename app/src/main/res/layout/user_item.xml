@@ -21,11 +21,11 @@
 
             <ImageView
                 android:id="@+id/tvimage"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="335dp"
+                android:layout_height="112dp"
                 android:layout_marginVertical="30dp"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="8dp"
+                android:scaleType="centerCrop" />
 
 
         </LinearLayout>
