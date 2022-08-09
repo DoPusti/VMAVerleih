@@ -1,10 +1,16 @@
 package com.example.vmverleihapp
 
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 
 class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
@@ -24,6 +30,16 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
         holder.name.text = currentitem.name
         holder.beschreibung.text = currentitem.description
         holder.status.text = currentitem.status
+        // Bild aus Storage holen
+        val storageRef = FirebaseStorage.getInstance().reference.child("myImages/${currentitem.imgUri.toString()}")
+        Log.i("IMAGE",storageRef.toString())
+        val localFile = File.createTempFile("tempImage","jpg")
+        storageRef.getFile(localFile).addOnSuccessListener {
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            holder.imgUri.setImageBitmap(bitmap)
+        }.addOnFailureListener{
+            Log.e("Adapter","Fehler beim Laden des Bildes")
+        }
 
 
     }
@@ -39,6 +55,7 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
         val name : TextView = itemView.findViewById(R.id.tvname)
         val beschreibung : TextView = itemView.findViewById(R.id.tvDescription)
         val status : TextView = itemView.findViewById(R.id.tvStatus)
+        val imgUri : ImageView = itemView.findViewById(R.id.tvimage)
 
     }
 
