@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.vmverleihapp.RealtimeDatabases.DatabaseModelProfil
 import com.example.vmverleihapp.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -13,6 +14,8 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private lateinit var referance: DatabaseReference
 
 
 
@@ -43,6 +46,7 @@ class SignUpActivity : AppCompatActivity() {
 
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
+                            addUserToDatabase(email)
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
                         } else {
@@ -57,6 +61,22 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
 
             }
+        }
+    }
+    private fun addUserToDatabase(InEmail : String) {
+        database =
+            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
+        referance = database.getReference("Profile")
+        val vorname = ""
+        val nachname = ""
+        val contact = ""
+        val email = InEmail.toString()
+        if (email.isNotEmpty()) {
+            val model = DatabaseModelProfil(vorname,nachname,contact,email)
+            val id = referance.push().key
+            referance.child(id!!).setValue(model)
+        } else {
+            Toast.makeText(applicationContext, "All Fields Required", Toast.LENGTH_LONG).show()
         }
     }
 }

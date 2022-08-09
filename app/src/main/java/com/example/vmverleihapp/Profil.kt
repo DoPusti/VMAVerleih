@@ -1,0 +1,8 @@
+package com.example.vmverleihapp
+
+data class Profil(
+    var vorname: String? = null,
+    var nachname: String? = null,
+    val email: String? = null,
+    var contact: String? = null
+)

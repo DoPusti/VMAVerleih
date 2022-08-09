@@ -5,14 +5,20 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.vmverleihapp.RealtimeDatabases.DatabaseModel
+import com.example.vmverleihapp.RealtimeDatabases.DatabaseModelProfil
 import com.example.vmverleihapp.databinding.ActivitySignInBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.activity_add_items.*
 import kotlin.math.log
 
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
     private lateinit var firebaseAuth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +39,9 @@ class SignInActivity : AppCompatActivity() {
             if (email.isNotEmpty() && pass.isNotEmpty()) {
 
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
+
                     if (it.isSuccessful) {
+
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     } else {
@@ -45,8 +53,13 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
 
             }
+
+
+
+
         }
     }
+
 
     override fun onStart() {
         super.onStart()

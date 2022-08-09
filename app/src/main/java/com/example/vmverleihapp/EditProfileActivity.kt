@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 
@@ -13,6 +15,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: EditProfileActivity
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var dbref: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +23,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_edit_profile)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         toolbarProfile.setNavigationOnClickListener {
             onBackPressed()
         }
@@ -87,7 +91,62 @@ class EditProfileActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
+        buUpdateProfil.setOnClickListener {
+            updateProfil(
+                et_first_name.text.toString(),
+                et_last_name.text.toString(),
+                et_contact_no.text.toString()
+            )
 
+
+        }
+    }
+
+    private fun updateProfil(inFirstName: String, inLastName: String, inContact: String) {
+
+        dbref =
+            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Profil")
+        dbref.addValueEventListener(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                /*
+                if (snapshot.exists()) {
+                    for (userSnapshot in snapshot.children) {
+                        var profil = userSnapshot.getValue(Profil::class.java)
+                        if (profil!!.email == firebaseAuth.currentUser!!.email.toString()) {
+
+                            val empID = dbref.push().key!!
+                            profil.contact = inContact
+                            profil.nachname = inLastName
+                            profil.vorname = inFirstName
+
+                            dbref.child(empID).setValue(profil).addOnCompleteListener {
+                                Toast.makeText(
+                                    this@EditProfileActivity,
+                                    "Profil erfolgreich geupdatet",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }.addOnFailureListener {
+
+                                Toast.makeText(
+                                    this@EditProfileActivity,
+                                    "Fehler beim Update",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+                */
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
 
     }
 

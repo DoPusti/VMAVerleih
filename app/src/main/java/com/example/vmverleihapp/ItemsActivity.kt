@@ -24,7 +24,7 @@ class ItemsActivity : AppCompatActivity() {
         userRecyclerView = findViewById(R.id.userList)
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
-        userArrayList = arrayListOf<User>()
+        userArrayList = arrayListOf()
         firebaseAuth = FirebaseAuth.getInstance()
 
         getUserData()
@@ -48,10 +48,8 @@ class ItemsActivity : AppCompatActivity() {
                     for (userSnapshot in snapshot.children) {
                         val userID = userSnapshot.getValue(UserAuth::class.java)
                         if (userID!!.mail == firebaseAuth.currentUser!!.email.toString()) {
-                            val user = User(userID!!.name,userID!!.description, userID!!.status,userID!!.imgUri)
-                            if (user != null) {
-                                userArrayList.add(user)
-                            }
+                            val user = User(userID.name,userID!!.description, userID!!.status,userID!!.imgUri)
+                            userArrayList.add(user)
                         }
                     }
                     userRecyclerView.adapter = MyAdapter(userArrayList)
@@ -63,7 +61,6 @@ class ItemsActivity : AppCompatActivity() {
             }
         })
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")

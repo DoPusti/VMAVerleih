@@ -77,7 +77,6 @@ class AddItemsActivity : AppCompatActivity() {
 
             val uuid = UUID.randomUUID().toString()
             val ref = storageReference?.child("myImages/$uuid")
-            val uploadTask = ref?.putFile(filePath!!)
             ref?.putFile(filePath!!)?.addOnSuccessListener {
                 Toast.makeText(
                     this@AddItemsActivity,
