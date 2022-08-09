@@ -64,37 +64,31 @@ class AddItemsActivity : AppCompatActivity() {
         referance = database.getReference("Users")
         buSave.setOnClickListener {
             sendData()
+            uploadImage()
             val intent = Intent(this@AddItemsActivity, ItemsActivity::class.java)
             @Suppress("DEPRECATION")
             startActivity(intent)
         }
 
         tvAddImage.setOnClickListener {
-            /*
-            val pictureDialog = AlertDialog.Builder(this)
-            pictureDialog.setTitle("Bitte Aktion auswählen")
-            val chooseOne: String = "Foto aus Galerie"
-            val chooseTwo: String = "Foto aufnehmen"
-            val pictureDialogItems = arrayOf(
-                chooseOne,
-                chooseTwo
-            )
-            pictureDialog.setItems(pictureDialogItems) { _, choose ->
-                when (choose) {
-                    0 -> choosePhotoFromGallery()
-                    1 -> takePhotoWithCamera()
-                }
-
-            }
-            pictureDialog.show()
-
-             */
-            val intent = Intent()
-            intent.type = "image/*"
-            intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(intent,"Select Picture"), IMAGE)
+            launchGallery()
         }
 
+    }
+    private fun launchGallery() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
+    }
+    private fun uploadImage(){
+        if(filePath != null){
+            val ref = storageReference?.child("myImages/" + UUID.randomUUID().toString())
+            val uploadTask = ref?.putFile(filePath!!)
+
+        }else{
+            Toast.makeText(this, "Please Upload an Image", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun sendData() {
@@ -112,144 +106,20 @@ class AddItemsActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "All Fields Required", Toast.LENGTH_LONG).show()
         }
     }
-    /* Auswahl 1 von "Bild hinzufügen" - Foto aus Gallery */
-    private fun choosePhotoFromGallery() {
-        Dexter.withContext(this)
-            .withPermissions(
-                /* Prüfung ob wir die Berechtigung haben */
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            /* Listener wartet bis es akzeptiert wird, oder bereits vorhanden ist */
-            .withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-                    if (p0!!.areAllPermissionsGranted()) {
-                        val galleryIntent = Intent(
-                            Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                        )
-
-                        startActivityForResult(galleryIntent, GALLERY)
-
-
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<PermissionRequest>?,
-                    p1: PermissionToken?
-                ) {
-                    showRationaleDialogForPermissions()
-                }
-
-
-            })
-            /* Notwendig für die Ausführung */
-            .onSameThread()
-            .check()
-    }
-    /* Auswahl 2 von "Bild hinzufügen" - Foto mit Kamera*/
-    private fun takePhotoWithCamera() {
-
-        Dexter.withContext(this)
-            .withPermissions(
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA
-
-
-            )
-            .withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-                    if (p0!!.areAllPermissionsGranted()) {
-                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        @Suppress("DEPRECATION")
-                        startActivityForResult(cameraIntent, CAMERA)
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<PermissionRequest>?,
-                    p1: PermissionToken?
-                ) {
-                    showRationaleDialogForPermissions()
-                }
-
-            }
-            ).onSameThread()
-            .check()
-    }
-    /* Wenn Berechtigung nicht vorliegt */
-    private fun showRationaleDialogForPermissions() {
-        AlertDialog.Builder(this).setMessage("Es liegen keine Berechtigungen vor")
-            .setPositiveButton("Zu den Einstellungen") { _, _ ->
-                try {
-                    /* Einstellungen auf dem Gerät öffnen */
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    /* Paketname wird übergeben */
-                    val uri = Uri.fromParts("package", packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
-
-                }
-
-
-            }
-            .setNegativeButton("Abbrechen") { dialog, _ ->
-                dialog.dismiss()
-
-            }.show()
-
-    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == GALLERY) {
-                if (data != null) {
-                    val contentURI = data.data
-                    try {
-                        @Suppress("DEPRECATION")
-                        val selectedImageBitmap =
-                            MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
-                        /* Das Bild soll nun auch im ImageView angezeigt werden */
-                        ivPlaceImage!!.setImageBitmap(selectedImageBitmap)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        Toast.makeText(
-                            this@AddItemsActivity,
-                            "Fehlgeschlagen",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
-
+            if (requestCode == PICK_IMAGE_REQUEST) {
+                if(data == null || data.data == null){
+                    return
                 }
-            } else if (requestCode == CAMERA) {
 
-                val photoBitmap: Bitmap = data!!.extras!!.get("data") as Bitmap
-                /* Beispielausgabe :
-
-                Saved Image:: Path: /data/user/0/com.example.vmagardener/app_PlantsImages/b963386c-a5e9-405f-9a85-4412252d447e.jpg
-
-                 */
-
-
-                ivPlaceImage!!.setImageBitmap(photoBitmap)
-
-            } else if (requestCode == IMAGE) {
-                filePath = data!!.data
+                filePath = data.data
                 try {
-                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver,filePath)
-                    tvimage.setImageBitmap(bitmap)
-
-                }catch (e:IOException) {
+                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+                    ivPlaceImage.setImageBitmap(bitmap)
+                } catch (e: IOException) {
                     e.printStackTrace()
                 }
-                //imageURI = data?.data!!
-                //tvimage.setImageURI(imageURI)
-                //uploadImage()
-
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             Log.e("Cancelled", "Cancelled")
@@ -257,32 +127,12 @@ class AddItemsActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
     }
-    private fun uploadImage() {
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Uploading File...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-
-        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
-        val now = Date()
-        val fileName = formatter.format(now)
-        val storageReference = FirebaseStorage.getInstance().getReference("images/$fileName")
-
-        storageReference.putFile(imageURI).
-                addOnSuccessListener {
-                    tvimage.setImageURI(null)
-                    Toast.makeText(this@AddItemsActivity,"Succesfulty uploaded",Toast.LENGTH_SHORT).show()
-                    if(progressDialog.isShowing) progressDialog.dismiss()
-                }.addOnFailureListener{
-                    if(progressDialog.isShowing) progressDialog.dismiss()
-                    Toast.makeText(this@AddItemsActivity,"Upload Failed",Toast.LENGTH_SHORT).show()
-        }
-    }
     companion object {
         // Codes für Intent onActivityResult
         private const val GALLERY = 1
         private const val CAMERA = 2
         private const val IMAGE = 3
+        private const val PICK_IMAGE_REQUEST = 4
 
 
 

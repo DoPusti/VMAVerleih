@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userArrayList: ArrayList<User>
     private lateinit var userRecyclerView: RecyclerView
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private var root: DatabaseReference = db.reference
     private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
