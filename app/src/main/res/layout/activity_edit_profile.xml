@@ -41,8 +41,9 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="165dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"
+                    android:src="@drawable/add_screen_image_placeholder"
 
                     />
             </com.google.android.material.textfield.TextInputLayout>
