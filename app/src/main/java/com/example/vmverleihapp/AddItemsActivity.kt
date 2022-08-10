@@ -50,9 +50,13 @@ class AddItemsActivity : AppCompatActivity() {
         referance = database.getReference("Users")
         buSave.setOnClickListener {
             uploadImage()
-            val intent = Intent(this@AddItemsActivity, ItemsActivity::class.java)
-            @Suppress("DEPRECATION")
-            startActivity(intent)
+            Thread.sleep(1_000)
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
+        buCancel.setOnClickListener {
+            setResult(Activity.RESULT_OK)
+            finish()
         }
 
         tvAddImage.setOnClickListener {

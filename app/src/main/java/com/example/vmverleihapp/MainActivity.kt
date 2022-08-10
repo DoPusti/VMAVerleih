@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_PROFILE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-
+                getAllData()
             } else {
                 Log.e("Activity", "Abgebrochen oder zurück gedrückt")
             }

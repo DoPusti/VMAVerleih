@@ -36,9 +36,8 @@ class EditProfileActivity : AppCompatActivity() {
             startActivityForResult(intent, ITEM_VIEW_REQUEST_CODE)
         }
         buToMain.setOnClickListener {
-            val intent = Intent(this@EditProfileActivity, MainActivity::class.java)
-            @Suppress("DEPRECATION")
-            startActivity(intent)
+            setResult(Activity.RESULT_OK)
+            finish()
         }
         if (et_email.text.isEmpty()) {
             et_email.hint = "Email"
@@ -89,6 +88,7 @@ class EditProfileActivity : AppCompatActivity() {
             val intent = Intent(this@EditProfileActivity, SignInActivity::class.java)
             @Suppress("DEPRECATION")
             startActivity(intent)
+            finish()
 
         }
         buUpdateProfil.setOnClickListener {
