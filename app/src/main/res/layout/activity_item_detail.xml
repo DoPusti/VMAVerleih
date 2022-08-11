@@ -41,7 +41,6 @@
 
 
                 <LinearLayout
-                    android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -52,7 +51,6 @@
                         android:textColor="#212121"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:text="Name:"
                         tools:text="Name: " />
 
                     <TextView
@@ -61,7 +59,6 @@
                         android:textColor="#212121"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:text="Beschreibung: "
                         tools:text="Beschreibung: " />
 
                     <TextView
@@ -69,7 +66,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="#212121"
                         android:textSize="16sp"
-                        android:text="Status: "
                         android:textStyle="bold"
                         tools:text="Status: " />
 

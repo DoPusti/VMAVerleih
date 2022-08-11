@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 
-class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>(), Filterable {
+open class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>(), Filterable {
+    private var onClickListener : OnClickListener? = null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -22,6 +23,11 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
             parent,false)
         return MyViewHolder(itemView)
 
+    }
+    // Adapter kann keine OnClicklistener haben, daher dieser Umweg
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        Log.i("Adapter","Onclick")
+        this.onClickListener = onClickListener
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -58,6 +64,11 @@ class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<M
         val status : TextView = itemView.findViewById(R.id.tvStatus)
         val imgUri : ImageView = itemView.findViewById(R.id.tvimage)
 
+    }
+    interface OnClickListener {
+        fun onClick(position: Int, model: User) {
+
+        }
     }
 
     override fun getFilter(): Filter {

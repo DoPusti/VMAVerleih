@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         getAllData()
 
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -112,19 +113,20 @@ class MainActivity : AppCompatActivity() {
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf()
+        val itemAdapter = MyAdapter(itemList)
         userRecyclerView.adapter = MyAdapter(itemList)
 
-        /*
-        val plantAdaper = PlantAdapter(this, plantList)
-        rvPlantList.adapter = plantAdaper
-
-        plantAdaper.setOnClickListener(object : PlantAdapter.OnClickListener {
-            override fun onClick(position: Int, model: PlantModel) {
-                val intent = Intent(this@MainActivity, PlantDetailActivity::class.java)
-                intent.putExtra(PLANT_OBJECT_DETAILS,model)
+        itemAdapter.setOnClickListener(object : MyAdapter.OnClickListener {
+            override fun onClick(position: Int, model: User) {
+                val intent = Intent(this@MainActivity, ItemDetailActivity::class.java)
+                intent.putExtra(ITEM_DETAIL_NAME,model.name.toString())
+                intent.putExtra(ITEM_DETAIL_DESC,model.description.toString())
+                intent.putExtra(ITEM_DETAIL_STATUS,model.status.toString())
+                intent.putExtra(ITEM_DETAIL_IMGURI,model.imgUri.toString())
                 startActivity(intent)
             }
         })
+        /*
         val editSwipeHandler = object  : SwipeToEditCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = rvPlantList.adapter as PlantAdapter
@@ -153,6 +155,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val EDIT_PROFILE_ACTIVITY_REQUEST_CODE = 1
+        private const val ITEM_DETAIL_NAME = "ITEM_DETAIL_NAME"
+        private const val ITEM_DETAIL_DESC = "ITEM_DETAIL_DESC"
+        private const val ITEM_DETAIL_STATUS = "ITEM_DETAIL_STATUS"
+        private const val ITEM_DETAIL_IMGURI = "ITEM_DETAIL_IMGURI"
 
     }
 }

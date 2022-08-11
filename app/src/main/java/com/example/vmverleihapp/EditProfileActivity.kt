@@ -1,9 +1,12 @@
 package com.example.vmverleihapp
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +32,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
         firebaseAuth = FirebaseAuth.getInstance()
         et_email.setText(firebaseAuth.currentUser!!.email.toString())
+        getProfilData()
 
         buViewItems.setOnClickListener {
             val intent = Intent(this@EditProfileActivity, ItemsActivity::class.java)
@@ -100,45 +104,85 @@ class EditProfileActivity : AppCompatActivity() {
 
 
         }
+
     }
 
-    private fun updateProfil(inFirstName: String, inLastName: String, inContact: String) {
 
+    private fun getProfilData() {
         dbref =
             FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("Profil")
+                .getReference("Profile")
         dbref.addValueEventListener(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                /*
+
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
                         var profil = userSnapshot.getValue(Profil::class.java)
                         if (profil!!.email == firebaseAuth.currentUser!!.email.toString()) {
+                            et_first_name.setText(profil.vorname.toString())
+                            et_last_name.setText(profil.nachname.toString())
+                            et_contact_no.setText(profil.contact.toString())
+                        }
+                    }
+                }
 
-                            val empID = dbref.push().key!!
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+
+    }
+    private fun updateProfil(inFirstName: String, inLastName: String, inContact: String) {
+
+        dbref =
+            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("Profile")
+        dbref.addValueEventListener(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                if (snapshot.exists()) {
+                    for (userSnapshot in snapshot.children) {
+                        var profil = userSnapshot.getValue(Profil::class.java)
+                        if (profil!!.email == firebaseAuth.currentUser!!.email.toString()) {
+                            Log.i("PROFILLOG Contact",profil.contact.toString())
+                            Log.i("PROFILLOG Nachname",profil.nachname.toString())
+                            Log.i("PROFILLOG Vorname",profil.vorname.toString())
+                            Log.i("PROFILLOG Email",profil.email.toString())
+                            Log.i("PROFILLOG Email",profil.email.toString())
+                            Log.i("PROFILLOG Key",userSnapshot.key.toString())
+                            //val empID = dbref.push().key!!
                             profil.contact = inContact
                             profil.nachname = inLastName
                             profil.vorname = inFirstName
 
-                            dbref.child(empID).setValue(profil).addOnCompleteListener {
-                                Toast.makeText(
-                                    this@EditProfileActivity,
-                                    "Profil erfolgreich geupdatet",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }.addOnFailureListener {
+                            userSnapshot!!.key?.let {
+                                dbref.child(it).setValue(profil).addOnCompleteListener {
+                                    Toast.makeText(
+                                        this@EditProfileActivity,
+                                        "Profil erfolgreich geupdatet",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }.addOnFailureListener {
 
-                                Toast.makeText(
-                                    this@EditProfileActivity,
-                                    "Fehler beim Update",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                    Toast.makeText(
+                                        this@EditProfileActivity,
+                                        "Fehler beim Update",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
+
                         }
                     }
                 }
-                */
+
 
             }
 

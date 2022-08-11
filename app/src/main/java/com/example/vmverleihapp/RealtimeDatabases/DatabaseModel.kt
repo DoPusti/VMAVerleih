@@ -7,5 +7,4 @@ class DatabaseModel(
     var mail: String,
     var imgUri: String,
     var status : String
-) {
-}
+)
