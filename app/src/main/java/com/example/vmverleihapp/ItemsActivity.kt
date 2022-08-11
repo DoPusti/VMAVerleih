@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_items.*
 
 class ItemsActivity : AppCompatActivity() {
@@ -22,7 +23,13 @@ class ItemsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_items)
+        setSupportActionBar(toolbarUserItems)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
+        toolbarUserItems.setNavigationOnClickListener {
+            onBackPressed()
+        }
 
         firebaseAuth = FirebaseAuth.getInstance()
 

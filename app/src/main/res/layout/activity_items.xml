@@ -3,12 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ItemsActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarUserItems"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        android:background="?colorPrimary"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="60dp"
         android:visibility="gone"
         tools:visibility="gone"
         tools:listitem="@layout/user_item" />

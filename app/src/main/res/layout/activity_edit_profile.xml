@@ -13,6 +13,7 @@
         android:id="@+id/toolbarProfile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator"
         android:background="?colorPrimary"
         />
 
@@ -42,10 +43,10 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:layout_marginTop="50dp"
 
-                    android:src="@drawable/add_screen_image_placeholder"
+                    android:src="@drawable/user_profil"
 
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -65,7 +66,6 @@
                     android:id="@+id/et_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:gravity="center"
                     android:padding="10dp"
                     android:textColor="#000000"
@@ -89,7 +89,6 @@
                     android:id="@+id/et_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:gravity="center"
                     android:padding="10dp"
                     android:textColor="#000000"
@@ -113,7 +112,6 @@
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:gravity="center"
                     android:inputType="textEmailAddress"
                     android:padding="10dp"
@@ -138,7 +136,6 @@
                     android:id="@+id/et_contact_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#00000000"
                     android:gravity="center"
                     android:inputType="phone"
                     android:padding="10dp"
@@ -194,23 +191,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/buViewItems"
                 app:layout_constraintWidth_percent="0.7" />
-
-            <Button
-                android:id="@+id/buToMain"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@color/design_default_color_primary"
-                android:elevation="2dp"
-                android:text="Zurück"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/buUpdateProfil"
-                app:layout_constraintWidth_percent="0.7" />
             <Button
                 android:id="@+id/buLogOff"
                 style="?android:attr/borderlessButtonStyle"
@@ -225,7 +205,7 @@
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/buToMain"
+                app:layout_constraintTop_toBottomOf="@+id/buUpdateProfil"
                 app:layout_constraintWidth_percent="0.7" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

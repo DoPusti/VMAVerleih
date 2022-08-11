@@ -26,6 +26,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_edit_profile)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         toolbarProfile.setNavigationOnClickListener {
             onBackPressed()
@@ -38,10 +39,6 @@ class EditProfileActivity : AppCompatActivity() {
             val intent = Intent(this@EditProfileActivity, ItemsActivity::class.java)
             @Suppress("DEPRECATION")
             startActivityForResult(intent, ITEM_VIEW_REQUEST_CODE)
-        }
-        buToMain.setOnClickListener {
-            setResult(Activity.RESULT_OK)
-            finish()
         }
         if (et_email.text.isEmpty()) {
             et_email.hint = "Email"
