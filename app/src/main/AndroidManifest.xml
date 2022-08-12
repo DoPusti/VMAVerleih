@@ -19,6 +19,9 @@
         android:theme="@style/Theme.VMVerleihApp"
         tools:targetApi="31">
         <activity
+            android:name=".ChatsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ItemDetailActivity"
             android:exported="false" />
         <activity

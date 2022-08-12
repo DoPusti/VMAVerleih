@@ -9,9 +9,9 @@
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/newMessage"
+        android:id="@+id/chats"
         android:icon="@drawable/ic_message_black_24dp"
-        android:title="Message"
+        android:title="Chats"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/user"

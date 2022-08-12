@@ -51,9 +51,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        val intent = Intent(this, EditProfileActivity::class.java)
-        @Suppress("DEPRECATION")
-        startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_REQUEST_CODE)
+        if (item.itemId == R.id.user)
+        {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            @Suppress("DEPRECATION")
+            startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_REQUEST_CODE)
+        }
+        else if (item.itemId == R.id.chats)
+        {
+            val intent = Intent(this, ChatsActivity::class.java)
+            @Suppress("DEPRECATION")
+            startActivity(intent)
+        }
 
         return super.onOptionsItemSelected(item)
     }
