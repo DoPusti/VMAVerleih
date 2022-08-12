@@ -1,24 +1,35 @@
 package com.example.vmverleihapp
 
 import android.app.Activity
-import android.content.Context
+import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 
 class EditProfileActivity : AppCompatActivity() {
 
-    private lateinit var binding: EditProfileActivity
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var dbref: DatabaseReference
+    private var firebaseStore: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +38,9 @@ class EditProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edit_profile)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        firebaseStore = FirebaseStorage.getInstance()
+        storageReference = FirebaseStorage.getInstance().reference
+
 
         toolbarProfile.setNavigationOnClickListener {
             onBackPressed()
@@ -40,6 +54,11 @@ class EditProfileActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             startActivityForResult(intent, ITEM_VIEW_REQUEST_CODE)
         }
+        editProfilImage.setOnClickListener {
+            takePhotoWithCamera()
+
+        }
+        editProfilImage.requestFocus()
         if (et_email.text.isEmpty()) {
             et_email.hint = "Email"
         }
@@ -104,6 +123,61 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
+    /* Auswahl 2 von "Bild hinzufügen" - Foto mit Kamera*/
+    private fun takePhotoWithCamera() {
+
+        Dexter.withContext(this)
+            .withPermissions(
+                android.Manifest.permission.CAMERA
+
+
+            )
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
+                    if (p0!!.areAllPermissionsGranted()) {
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        @Suppress("DEPRECATION")
+                        startActivityForResult(cameraIntent, CAMERA)
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: MutableList<PermissionRequest>?,
+                    p1: PermissionToken?
+                ) {
+                    showRationaleDialogForPermissions()
+                }
+
+            }
+            ).onSameThread()
+            .check()
+    }
+
+    /* Wenn Berechtigung nicht vorliegt */
+    private fun showRationaleDialogForPermissions() {
+        AlertDialog.Builder(this).setMessage("Es liegen keine Berechtigungen vor")
+            .setPositiveButton("Zu den Einstellungen") { _, _ ->
+                try {
+                    /* Einstellungen auf dem Gerät öffnen */
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    /* Paketname wird übergeben */
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+
+                }
+
+
+            }
+            .setNegativeButton("Abbrechen") { dialog, _ ->
+                dialog.dismiss()
+
+            }.show()
+
+    }
+
 
     private fun getProfilData() {
         dbref =
@@ -115,7 +189,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        var profil = userSnapshot.getValue(Profil::class.java)
+                        val profil = userSnapshot.getValue(Profil::class.java)
                         if (profil!!.email == firebaseAuth.currentUser!!.email.toString()) {
                             et_first_name.setText(profil.vorname.toString())
                             et_last_name.setText(profil.nachname.toString())
@@ -135,6 +209,7 @@ class EditProfileActivity : AppCompatActivity() {
 
 
     }
+
     private fun updateProfil(inFirstName: String, inLastName: String, inContact: String) {
 
         dbref =
@@ -146,18 +221,46 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        var profil = userSnapshot.getValue(Profil::class.java)
+                        val profil = userSnapshot.getValue(Profil::class.java)
+                        val uuid = ""
+
                         if (profil!!.email == firebaseAuth.currentUser!!.email.toString()) {
-                            Log.i("PROFILLOG Contact",profil.contact.toString())
-                            Log.i("PROFILLOG Nachname",profil.nachname.toString())
-                            Log.i("PROFILLOG Vorname",profil.vorname.toString())
-                            Log.i("PROFILLOG Email",profil.email.toString())
-                            Log.i("PROFILLOG Email",profil.email.toString())
-                            Log.i("PROFILLOG Key",userSnapshot.key.toString())
-                            //val empID = dbref.push().key!!
+                            /*
+                            if (filePath != null) {
+                                val progressDialog = ProgressDialog(this@EditProfileActivity)
+                                progressDialog.setMessage("Inserat wird hochgeladen...")
+                                progressDialog.setCancelable(false)
+                                progressDialog.show()
+
+                                uuid = UUID.randomUUID().toString()
+                                val ref = storageReference?.child("myImages/$uuid")
+                                ref?.putFile(filePath!!)?.addOnSuccessListener {
+                                    Toast.makeText(
+                                        this@EditProfileActivity,
+                                        "Erfolgreich hochgeladen!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    if (progressDialog.isShowing) progressDialog.dismiss()
+                                }
+                                    ?.addOnFailureListener {
+                                        if (progressDialog.isShowing) progressDialog.dismiss()
+                                        Toast.makeText(
+                                            this@EditProfileActivity,
+                                            "Fehler beim Hochladen",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                            }
+
+                             */
+
+
+
                             profil.contact = inContact
                             profil.nachname = inLastName
                             profil.vorname = inFirstName
+                            profil.imgUri = uuid
 
                             userSnapshot!!.key?.let {
                                 dbref.child(it).setValue(profil).addOnCompleteListener {
@@ -189,22 +292,31 @@ class EditProfileActivity : AppCompatActivity() {
 
         })
 
+
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ITEM_VIEW_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-            } else {
-                Log.e("Activity", "Abgebrochen oder zurück gedrückt")
-            }
-        }
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == ITEM_VIEW_REQUEST_CODE) {
 
+            }
+            if(requestCode == CAMERA) {
+                val photoBitmap: Bitmap = data!!.extras!!.get("data") as Bitmap
+                editProfilImage.setImageBitmap(photoBitmap)
+
+            }
+        } else {
+            Log.e("Activity", "Abgebrochen oder zurück gedrückt")
+        }
     }
+
 
     companion object {
         private const val ITEM_VIEW_REQUEST_CODE = 2
+        private const val CAMERA = 3
 
     }
 }

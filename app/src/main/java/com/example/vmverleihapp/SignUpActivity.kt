@@ -40,13 +40,15 @@ class SignUpActivity : AppCompatActivity() {
             val email = binding.emailEt.text.toString()
             val pass = binding.passET.text.toString()
             val confirmPass = binding.confirmPassEt.text.toString()
+            val name = binding.nameET.text.toString()
+            val contact = binding.contactET.text.toString()
 
             if (email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()) {
                 if (pass == confirmPass) {
 
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            addUserToDatabase(email)
+                            addUserToDatabase(email, name, contact)
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
                         } else {
@@ -63,16 +65,14 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
     }
-    private fun addUserToDatabase(InEmail : String) {
+    private fun addUserToDatabase(InEmail : String, InName : String, InContact : String) {
         database =
             FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
         referance = database.getReference("Profile")
         val vorname = ""
-        val nachname = ""
-        val contact = ""
         val email = InEmail.toString()
         if (email.isNotEmpty()) {
-            val model = DatabaseModelProfil(vorname,nachname,contact,email)
+            val model = DatabaseModelProfil(vorname, InName, InContact, email)
             val id = referance.push().key
             referance.child(id!!).setValue(model)
         } else {

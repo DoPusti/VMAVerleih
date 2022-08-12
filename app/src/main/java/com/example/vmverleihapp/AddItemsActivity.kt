@@ -2,11 +2,15 @@ package com.example.vmverleihapp
 
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +20,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_add_items.*
 import java.io.IOException
 import java.util.*
@@ -60,10 +69,80 @@ class AddItemsActivity : AppCompatActivity() {
         }
 
         tvAddImage.setOnClickListener {
-            launchGallery()
+            val pictureDialog = AlertDialog.Builder(this)
+            pictureDialog.setTitle("Bitte Aktion auswählen")
+            val chooseOne: String = "Foto aus Galerie"
+            val chooseTwo: String = "Foto aufnehmen"
+            val pictureDialogItems = arrayOf(
+                chooseOne,
+                chooseTwo
+            )
+            pictureDialog.setItems(pictureDialogItems) { _, choose ->
+                when (choose) {
+                    0 -> launchGallery()
+                    1 -> takePhotoWithCamera()
+                }
+
+            }
+            pictureDialog.show()
         }
 
     }
+
+    /* Auswahl 2 von "Bild hinzufügen" - Foto mit Kamera*/
+    private fun takePhotoWithCamera() {
+
+        Dexter.withContext(this)
+            .withPermissions(
+                android.Manifest.permission.CAMERA
+
+
+            )
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
+                    if (p0!!.areAllPermissionsGranted()) {
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        @Suppress("DEPRECATION")
+                        startActivityForResult(cameraIntent, CAMERA)
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: MutableList<PermissionRequest>?,
+                    p1: PermissionToken?
+                ) {
+                    showRationaleDialogForPermissions()
+                }
+
+            }
+            ).onSameThread()
+            .check()
+    }
+    /* Wenn Berechtigung nicht vorliegt */
+    private fun showRationaleDialogForPermissions() {
+        AlertDialog.Builder(this).setMessage("Es liegen keine Berechtigungen vor")
+            .setPositiveButton("Zu den Einstellungen") { _, _ ->
+                try {
+                    /* Einstellungen auf dem Gerät öffnen */
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    /* Paketname wird übergeben */
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+
+                }
+
+
+            }
+            .setNegativeButton("Abbrechen") { dialog, _ ->
+                dialog.dismiss()
+
+            }.show()
+
+    }
+
 
     private fun launchGallery() {
         val intent = Intent()
@@ -120,6 +199,9 @@ class AddItemsActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
+
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST) {
                 if (data == null || data.data == null) {
@@ -129,25 +211,30 @@ class AddItemsActivity : AppCompatActivity() {
                 filePath = data.data
                 try {
                     val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+                    Log.i("ActivityResult",bitmap.toString())
                     ivPlaceImage.setImageBitmap(bitmap)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            Log.e("Cancelled", "Cancelled")
+         } else if (requestCode == CAMERA) {
+            Log.i("ActivityResult",data!!.extras!!.get("data").toString())
+            val photoBitmap: Bitmap = data.extras!!.get("data") as Bitmap
+            ivPlaceImage!!.setImageBitmap(photoBitmap)
+         }
+            else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.e("Cancelled", "Cancelled")
+            }
+
         }
-        @Suppress("DEPRECATION")
-        super.onActivityResult(requestCode, resultCode, data)
+
+        companion object {
+            // Codes für Intent onActivityResult
+            private const val GALLERY = 1
+            private const val CAMERA = 2
+            private const val IMAGE = 3
+            private const val PICK_IMAGE_REQUEST = 4
+
+
+        }
     }
-
-    companion object {
-        // Codes für Intent onActivityResult
-        private const val GALLERY = 1
-        private const val CAMERA = 2
-        private const val IMAGE = 3
-        private const val PICK_IMAGE_REQUEST = 4
-
-
-    }
-}
