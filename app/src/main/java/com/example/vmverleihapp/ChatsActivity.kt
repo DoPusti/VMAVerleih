@@ -1,10 +1,11 @@
 package com.example.vmverleihapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.renderscript.Sampler
-import com.google.firebase.database.*
-import com.google.firebase.ktx.Firebase
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -22,14 +23,6 @@ class ChatsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {onBackPressed()}
 
-        val adapter = GroupAdapter<GroupieViewHolder>()
-
-        adapter.add(ChatItem())
-        adapter.add(ChatItem())
-        adapter.add(ChatItem())
-
-        chatsView.adapter = adapter
-
         fetchChats()
 
     }
@@ -39,8 +32,12 @@ class ChatsActivity : AppCompatActivity() {
         dbRef.addListenerForSingleValueEvent(object: ValueEventListener{
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                val adapter = GroupAdapter<GroupieViewHolder>()
                 for (child in snapshot.children) {
+                    val chat = child.getValue(Chat::class.java)
+                    adapter.add(ChatItem())
                 }
+                chatsView.adapter = adapter
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -49,6 +46,11 @@ class ChatsActivity : AppCompatActivity() {
         })
     }
 
+}
+
+class Chat(val user1: String, val user2: String)
+{
+    constructor() : this("","")
 }
 
 class ChatItem : Item<GroupieViewHolder>()
