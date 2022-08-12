@@ -3,16 +3,23 @@ package com.example.vmverleihapp
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.ContentValues.TAG
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.nfc.Tag
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.EmailAuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -22,6 +29,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_edit_profile.*
+import kotlinx.android.synthetic.main.activity_sign_in.*
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -57,6 +65,43 @@ class EditProfileActivity : AppCompatActivity() {
         editProfilImage.setOnClickListener {
             takePhotoWithCamera()
 
+        }
+        buDeleteUser.setOnClickListener {
+            var dialog = AlertDialog.Builder(this)
+            dialog.setTitle("Sind sie sicher?")
+            dialog.setMessage("Beim Löschen dieses Account werden alle dazugehörigen Daten ebenfalls gelöscht!")
+            val user = FirebaseAuth.getInstance().currentUser
+            Log.i("EditProfile",user!!.uid)
+            val credential = EmailAuthProvider.getCredential("dominik.pustofka@gmx.net","123456789")
+            user.reauthenticate(credential)
+                .addOnCompleteListener{Log.i("EditProfile","User reauthenticated")}
+
+            dialog.setPositiveButton("Löschen") {_ , _ ->
+
+                progressBar.visibility = View.VISIBLE
+
+               user.delete().addOnCompleteListener{ task ->
+                    if(task.isSuccessful) {
+                        progressBar.visibility = View.GONE
+                        Log.i("EditProfile","Account gelöscht")
+                        Toast.makeText(this,"Daten wurden gelöscht!", Toast.LENGTH_LONG).show()
+                        val intent = Intent(this@EditProfileActivity,SignInActivity::class.java)
+                        FirebaseAuth.getInstance().signOut()
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                    }
+
+                }
+
+
+            }
+            dialog.setNegativeButton("Abbrechen") {_ , _ ->
+                Toast.makeText(this,"Löschen wurde abgebrochen", Toast.LENGTH_LONG).show()
+
+            }
+            dialog.create()
+            dialog.show()
         }
         editProfilImage.requestFocus()
         if (et_email.text.isEmpty()) {
