@@ -27,23 +27,32 @@
             android:layout_height="match_parent"
             android:focusable="true"
             android:focusableInTouchMode="true">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                style="?android:attr/progressBarStyle"
+                app:layout_constraintBottom_toTopOf="@id/layout_image"
+                >
 
+            </ProgressBar>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="50dp"
                 android:textColorHint="#808080"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/shape_image_view_border"
                 app:layout_constraintWidth_percent="0.7">
 
                 <ImageView
+                    android:id="@+id/editProfilImage"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="50dp"
 
                     android:src="@drawable/user_profil"
@@ -208,6 +217,22 @@
                 app:layout_constraintTop_toBottomOf="@+id/buUpdateProfil"
                 app:layout_constraintWidth_percent="0.7" />
 
+            <Button
+                android:id="@+id/buDeleteUser"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/design_default_color_primary"
+                android:elevation="2dp"
+                android:text="Konto löschen"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buLogOff"
+                app:layout_constraintWidth_percent="0.7" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

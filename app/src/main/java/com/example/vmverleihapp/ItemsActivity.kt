@@ -39,10 +39,6 @@ class ItemsActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             startActivityForResult(intent, ITEM_ADD_REQUEST_CODE)
         }
-        fabBack.setOnClickListener {
-            setResult(Activity.RESULT_OK)
-            finish()
-        }
 
     }
     private fun getUserData() {
@@ -64,7 +60,6 @@ class ItemsActivity : AppCompatActivity() {
                         }
                     }
 
-                   // userRecyclerView.adapter = MyAdapter(userArrayList)
                 }
                 if(userArrayList.size > 0) {
                     userList.visibility = View.VISIBLE
@@ -88,8 +83,9 @@ class ItemsActivity : AppCompatActivity() {
         userArrayList = arrayListOf()
         userRecyclerView.adapter = MyAdapter(itemList)
 
+
+        val plantAdaper = MyAdapter( userArrayList)
         /*
-        val plantAdaper = PlantAdapter(this, plantList)
         rvPlantList.adapter = plantAdaper
 
         plantAdaper.setOnClickListener(object : PlantAdapter.OnClickListener {
@@ -99,6 +95,9 @@ class ItemsActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+        */
+
+        /*
         val editSwipeHandler = object  : SwipeToEditCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = rvPlantList.adapter as PlantAdapter
