@@ -1,5 +1,6 @@
 package com.example.vmverleihapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
@@ -35,7 +36,15 @@ class ChatsActivity : AppCompatActivity() {
                 val adapter = GroupAdapter<GroupieViewHolder>()
                 for (child in snapshot.children) {
                     val chat = child.getValue(Chat::class.java)
-                    adapter.add(ChatItem())
+                    if(chat != null)
+                    {
+                        adapter.add(ChatItem(chat))
+                    }
+
+                }
+                adapter.setOnItemClickListener {  item, view ->
+                    val intent = Intent(view.context, ChatLogActivity::class.java)
+                    startActivity(intent)
                 }
                 chatsView.adapter = adapter
             }
@@ -53,7 +62,7 @@ class Chat(val user1: String, val user2: String)
     constructor() : this("","")
 }
 
-class ChatItem : Item<GroupieViewHolder>()
+class ChatItem(val chat: Chat) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
 
