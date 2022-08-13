@@ -2,6 +2,7 @@ package com.example.vmverleihapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -11,6 +12,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.chat_user_row.view.*
 
@@ -46,6 +48,8 @@ class ChatsActivity : AppCompatActivity() {
                 }
                 adapter.setOnItemClickListener {  item, view ->
                     val intent = Intent(view.context, ChatLogActivity::class.java)
+                    val chatUserItem = item as ChatUserItem
+                    intent.putExtra(USER_KEY, chatUserItem.chatUser)
                     startActivity(intent)
 
                     //finish()
@@ -59,8 +63,14 @@ class ChatsActivity : AppCompatActivity() {
         })
     }
 
+    companion object {
+        const val USER_KEY = "USER_KEY"
+    }
+
 }
-class ChatUser(val email: String, val imgUri: String)
+
+@Parcelize
+class ChatUser(val email: String, val imgUri: String) : Parcelable
 {
     constructor() : this("","")
 }

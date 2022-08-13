@@ -6,13 +6,17 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chat_log.*
+import kotlinx.android.synthetic.main.activity_chat_log.toolbar
 
 class ChatLogActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
 
-        supportActionBar?.title = "..." // TODO Chat-Header eintragen
+        setSupportActionBar(toolbar)
+
+        val chatUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
+        supportActionBar?.title = chatUser?.email
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {onBackPressed()}
