@@ -2,13 +2,20 @@ package com.example.vmverleihapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chat_log.*
 import kotlinx.android.synthetic.main.activity_chat_log.toolbar
+import kotlinx.android.synthetic.main.chat_from_row.view.*
+import kotlinx.android.synthetic.main.chat_to_row.view.*
 
 class ChatLogActivity : AppCompatActivity() {
+
+    val adapter = GroupAdapter<GroupieViewHolder>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
@@ -21,24 +28,74 @@ class ChatLogActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {onBackPressed()}
 
-        val adapter = GroupAdapter<GroupieViewHolder>()
-
-        adapter.add(ChatFromItem(Chat("u1","u2")))
-        adapter.add(ChatToItem(Chat("u1","u2")))
-
         recyclerview_chat_log.adapter = adapter
+
+        receiveMessage()
+
+        send_button_chat_log.setOnClickListener{
+            sendMessage()
+        }
+    }
+
+    private fun receiveMessage(){
+        val dbRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages")
+
+        dbRef.addChildEventListener(object: ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val message = snapshot.getValue(ChatMessage::class.java)
+
+                if (message != null){
+
+                    if (message.fromId == FirebaseAuth.getInstance().uid){
+                        adapter.add(ChatFromItem(message.text))
+                    }
+                    else
+                    {
+                        adapter.add(ChatToItem(message.text))
+                    }
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+    }
+
+    private fun sendMessage(){
+        val dbRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages").push()
+
+        val fromId = FirebaseAuth.getInstance().uid
+        val chatUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
+        val toId = chatUser?.email
+
+        if(fromId == null)
+        { return }
+
+        val message = ChatMessage(dbRef.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000 )
+        dbRef.setValue(message).addOnSuccessListener {
+            // TODO
+        }
     }
 }
 
-class Chat(val user1: String, val user2: String)
-{
-    constructor() : this("","")
+class ChatMessage(val id: String, val text: String, val fromId: String, val toId: String, val timestamp: Long){
+    constructor() : this("","", "", "", -1)
 }
 
-class ChatFromItem(val chatUser: Chat) : Item<GroupieViewHolder>()
+class ChatFromItem(val text: String) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-
+        viewHolder.itemView.chat_message_from.text = text
     }
 
     override fun getLayout(): Int {
@@ -47,10 +104,10 @@ class ChatFromItem(val chatUser: Chat) : Item<GroupieViewHolder>()
 
 }
 
-class ChatToItem(val chatUser: Chat) : Item<GroupieViewHolder>()
+class ChatToItem(val text: String) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-
+        viewHolder.itemView.chat_message_to.text = text
     }
 
     override fun getLayout(): Int {
