@@ -70,9 +70,9 @@ class ChatsActivity : AppCompatActivity() {
 }
 
 @Parcelize
-class ChatUser(val email: String, val imgUri: String) : Parcelable
+class ChatUser(val email: String, val imgUri: String, val id: String) : Parcelable
 {
-    constructor() : this("","")
+    constructor() : this("","", "")
 }
 
 class ChatUserItem(val chatUser: ChatUser) : Item<GroupieViewHolder>()

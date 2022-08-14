@@ -68,12 +68,16 @@ class SignUpActivity : AppCompatActivity() {
     private fun addUserToDatabase(InEmail : String, InName : String, InContact : String) {
         database =
             FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
-        referance = database.getReference("Profile")
+        val id = FirebaseAuth.getInstance().uid
+
+
         val vorname = ""
         val email = InEmail.toString()
-        if (email.isNotEmpty()) {
-            val model = DatabaseModelProfil(vorname, InName, InContact, email)
-            val id = referance.push().key
+
+        if (email.isNotEmpty() && id != null) {
+            val model = DatabaseModelProfil(vorname, InName, InContact, email, id)
+            database.getReference("Profile/$id").push()
+            referance = database.getReference("Profile")
             referance.child(id!!).setValue(model)
         } else {
             Toast.makeText(applicationContext, "All Fields Required", Toast.LENGTH_LONG).show()

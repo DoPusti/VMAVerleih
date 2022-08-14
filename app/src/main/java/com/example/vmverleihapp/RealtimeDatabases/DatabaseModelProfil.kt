@@ -5,6 +5,7 @@ class DatabaseModelProfil(
     var vorname: String,
     var nachname: String,
     var contact: String,
-    var email: String
+    var email: String,
+    var id: String
 ) {
 }

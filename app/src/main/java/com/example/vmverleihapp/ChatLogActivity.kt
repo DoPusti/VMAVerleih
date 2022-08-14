@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.chat_to_row.view.*
 class ChatLogActivity : AppCompatActivity() {
 
     val adapter = GroupAdapter<GroupieViewHolder>()
+    var toUser: ChatUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +23,8 @@ class ChatLogActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-        val chatUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
-        supportActionBar?.title = chatUser?.email
+        toUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
+        supportActionBar?.title = toUser?.email
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {onBackPressed()}
@@ -38,7 +39,11 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     private fun receiveMessage(){
-        val dbRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages")
+
+        val fromId = FirebaseAuth.getInstance().uid
+        val toId = toUser?.id
+
+        val dbRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$fromId/$toId")
 
         dbRef.addChildEventListener(object: ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -72,19 +77,23 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     private fun sendMessage(){
-        val dbRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages").push()
-
         val fromId = FirebaseAuth.getInstance().uid
         val chatUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
-        val toId = chatUser?.email
+        val toId = chatUser?.id
 
         if(fromId == null)
         { return }
 
-        val message = ChatMessage(dbRef.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000 )
-        dbRef.setValue(message).addOnSuccessListener {
-            // TODO
-        }
+        val fromReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$fromId/$toId").push()
+
+        val message = ChatMessage(fromReference.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000 )
+        fromReference.setValue(message).addOnSuccessListener {
+            message_chat_log.text.clear()
+            recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
+         }
+
+        val toReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$toId/$fromId").push()
+        toReference.setValue(message)
     }
 }
 
