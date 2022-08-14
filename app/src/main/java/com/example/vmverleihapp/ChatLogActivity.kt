@@ -1,16 +1,17 @@
 package com.example.vmverleihapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chat_log.*
-import kotlinx.android.synthetic.main.activity_chat_log.toolbar
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ChatLogActivity : AppCompatActivity() {
 
@@ -50,13 +51,16 @@ class ChatLogActivity : AppCompatActivity() {
                 val message = snapshot.getValue(ChatMessage::class.java)
 
                 if (message != null){
+                    val sdf = SimpleDateFormat("MM.dd.yy HH:mm")
+                    val date = Date(message.timestamp * 1000)
+                    val timestamp = sdf.format(date)
 
                     if (message.fromId == FirebaseAuth.getInstance().uid){
-                        adapter.add(ChatFromItem(message.text))
+                        adapter.add(ChatToItem(message.text, timestamp))
                     }
                     else
                     {
-                        adapter.add(ChatToItem(message.text))
+                        adapter.add(ChatFromItem(message.text, timestamp))
                     }
                 }
             }
@@ -101,10 +105,11 @@ class ChatMessage(val id: String, val text: String, val fromId: String, val toId
     constructor() : this("","", "", "", -1)
 }
 
-class ChatFromItem(val text: String) : Item<GroupieViewHolder>()
+class ChatFromItem(val text: String, val timestamp: String) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_message_from.text = text
+        viewHolder.itemView.chat_timestamp_from.text = timestamp
     }
 
     override fun getLayout(): Int {
@@ -113,10 +118,11 @@ class ChatFromItem(val text: String) : Item<GroupieViewHolder>()
 
 }
 
-class ChatToItem(val text: String) : Item<GroupieViewHolder>()
+class ChatToItem(val text: String, val timestamp: String) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_message_to.text = text
+        viewHolder.itemView.chat_timestamp_to.text = timestamp
     }
 
     override fun getLayout(): Int {

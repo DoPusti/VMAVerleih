@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp">
     <TextView
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/chat_timestamp_from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
@@ -24,8 +24,8 @@
         android:maxWidth="240dp"
         android:padding="16dp"
         android:text="Das ist meine Anfrage..."
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintStart_toStartOf="@+id/chat_timestamp_from"
+        app:layout_constraintTop_toBottomOf="@+id/chat_timestamp_from" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
