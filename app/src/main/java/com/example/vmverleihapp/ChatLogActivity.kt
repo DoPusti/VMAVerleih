@@ -51,7 +51,7 @@ class ChatLogActivity : AppCompatActivity() {
                 val message = snapshot.getValue(ChatMessage::class.java)
 
                 if (message != null){
-                    val sdf = SimpleDateFormat("MM.dd.yy HH:mm")
+                    val sdf = SimpleDateFormat("dd.MM.yy HH:mm")
                     val date = Date(message.timestamp * 1000)
                     val timestamp = sdf.format(date)
 
