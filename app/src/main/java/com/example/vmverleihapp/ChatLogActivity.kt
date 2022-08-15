@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chat_log.*
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
@@ -12,21 +15,14 @@ import java.util.*
 
 class ChatLogActivity : AppCompatActivity() {
 
-    /*
     val adapter = GroupAdapter<GroupieViewHolder>()
-
-     */
-    /*
     var toUser: ChatUser? = null
-
-     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
 
         setSupportActionBar(toolbar)
-        /*
 
         toUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
         supportActionBar?.title = toUser?.email
@@ -34,27 +30,17 @@ class ChatLogActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {onBackPressed()}
 
-         */
-
-        /*
         recyclerview_chat_log.adapter = adapter
 
-         */
-
-        /*
         receiveMessage()
 
         send_button_chat_log.setOnClickListener{
             sendMessage()
         }
-        */
-
     }
 
-    private fun receiveMessage() {
-    }
-    }
-        /*
+    private fun receiveMessage(){
+
         val fromId = FirebaseAuth.getInstance().uid
         val toId = toUser?.id
 
@@ -69,7 +55,6 @@ class ChatLogActivity : AppCompatActivity() {
                     val date = Date(message.timestamp * 1000)
                     val timestamp = sdf.format(date)
 
-                    /*
                     if (message.fromId == FirebaseAuth.getInstance().uid){
                         adapter.add(ChatToItem(message.text, timestamp))
                     }
@@ -77,8 +62,6 @@ class ChatLogActivity : AppCompatActivity() {
                     {
                         adapter.add(ChatFromItem(message.text, timestamp))
                     }
-
-                     */
                 }
             }
 
@@ -96,8 +79,7 @@ class ChatLogActivity : AppCompatActivity() {
 
         })
     }
-    */
-/*
+
     private fun sendMessage(){
         val fromId = FirebaseAuth.getInstance().uid
         val chatUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
@@ -111,10 +93,7 @@ class ChatLogActivity : AppCompatActivity() {
         val message = ChatMessage(fromReference.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000 )
         fromReference.setValue(message).addOnSuccessListener {
             message_chat_log.text.clear()
-            /*
             recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
-
-             */
          }
 
         val toReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$toId/$fromId").push()
@@ -125,8 +104,6 @@ class ChatLogActivity : AppCompatActivity() {
 class ChatMessage(val id: String, val text: String, val fromId: String, val toId: String, val timestamp: Long){
     constructor() : this("","", "", "", -1)
 }
-
-/*
 
 class ChatFromItem(val text: String, val timestamp: String) : Item<GroupieViewHolder>()
 {
@@ -153,5 +130,3 @@ class ChatToItem(val text: String, val timestamp: String) : Item<GroupieViewHold
     }
 
 }
-
- */
