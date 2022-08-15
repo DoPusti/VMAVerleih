@@ -56,11 +56,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, EditProfileActivity::class.java)
             @Suppress("DEPRECATION")
             startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_REQUEST_CODE)}
-            /*
+
         R.id.chats -> {
             val intent = Intent(this, ChatsActivity::class.java)
             @Suppress("DEPRECATION")
-            startActivity(intent)}*/
+            startActivity(intent)}
         }
 
 
