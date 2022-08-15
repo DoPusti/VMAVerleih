@@ -62,6 +62,10 @@ class ChatLogActivity : AppCompatActivity() {
                     {
                         adapter.add(ChatFromItem(message.text, timestamp))
                     }
+
+                    if(adapter.itemCount > 0){
+                        recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
+                    }
                 }
             }
 
