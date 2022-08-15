@@ -1,5 +1,6 @@
 package com.example.vmverleihapp
 
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 
-open class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>(), Filterable {
+open class MyAdapter(private val context: Context, private val userList : ArrayList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
     private var onClickListener : OnClickListener? = null
 
 
@@ -33,20 +34,28 @@ open class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adap
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val currentitem = userList[position]
+        if(holder is MyViewHolder) {
+            holder.name.text = currentitem.name
+            holder.beschreibung.text = currentitem.description
+            holder.status.text = currentitem.status
+            // Bild aus Storage holen
+            val storageRef = FirebaseStorage.getInstance().reference.child("myImages/${currentitem.imgUri.toString()}")
+            Log.i("IMAGE",storageRef.toString())
+            val localFile = File.createTempFile("tempImage","jpg")
+            storageRef.getFile(localFile).addOnSuccessListener {
+                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                holder.imgUri.setImageBitmap(bitmap)
+            }.addOnFailureListener{
+                Log.e("Adapter", "Fehler beim Laden des Bildes$storageRef")
+            }
+            holder.itemView.setOnClickListener {
+                if(onClickListener != null) {
+                    onClickListener!!.onClick(position, currentitem)
+                }
+            }
 
-        holder.name.text = currentitem.name
-        holder.beschreibung.text = currentitem.description
-        holder.status.text = currentitem.status
-        // Bild aus Storage holen
-        val storageRef = FirebaseStorage.getInstance().reference.child("myImages/${currentitem.imgUri.toString()}")
-        Log.i("IMAGE",storageRef.toString())
-        val localFile = File.createTempFile("tempImage","jpg")
-        storageRef.getFile(localFile).addOnSuccessListener {
-            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            holder.imgUri.setImageBitmap(bitmap)
-        }.addOnFailureListener{
-            Log.e("Adapter", "Fehler beim Laden des Bildes$storageRef")
         }
+
 
 
     }
@@ -71,8 +80,6 @@ open class MyAdapter(private val userList : ArrayList<User>) : RecyclerView.Adap
         }
     }
 
-    override fun getFilter(): Filter {
-        TODO("Not yet implemented")
-    }
+
 
 }

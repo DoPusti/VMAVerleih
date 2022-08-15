@@ -56,11 +56,14 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, EditProfileActivity::class.java)
             @Suppress("DEPRECATION")
             startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_REQUEST_CODE)}
+            /*
         R.id.chats -> {
             val intent = Intent(this, ChatsActivity::class.java)
             @Suppress("DEPRECATION")
-            startActivity(intent)}
+            startActivity(intent)}*/
         }
+
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -96,7 +99,6 @@ class MainActivity : AppCompatActivity() {
                         }
 
                     }
-                    //userRecyclerView.adapter = MyAdapter(userArrayList)
                 }
                 if(userArrayList.size > 0) {
                     allList.visibility = View.VISIBLE
@@ -114,13 +116,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+
     private fun setupItemRecyclerView(itemList: ArrayList<User>) {
         userRecyclerView = findViewById(R.id.allList)
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf()
-        val itemAdapter = MyAdapter(itemList)
-        userRecyclerView.adapter = MyAdapter(itemList)
+        val itemAdapter = MyAdapter(this,itemList)
+        userRecyclerView.adapter = MyAdapter(this,itemList)
 
         itemAdapter.setOnClickListener(object : MyAdapter.OnClickListener {
             override fun onClick(position: Int, model: User) {
@@ -129,6 +133,7 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra(ITEM_DETAIL_DESC,model.description.toString())
                 intent.putExtra(ITEM_DETAIL_STATUS,model.status.toString())
                 intent.putExtra(ITEM_DETAIL_IMGURI,model.imgUri.toString())
+                Log.i("Adapter","wird gestartet")
                 startActivity(intent)
             }
         })

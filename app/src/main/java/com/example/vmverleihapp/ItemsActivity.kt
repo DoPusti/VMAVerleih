@@ -81,10 +81,10 @@ class ItemsActivity : AppCompatActivity() {
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf()
-        userRecyclerView.adapter = MyAdapter(itemList)
+        userRecyclerView.adapter = MyAdapter(this,itemList)
 
 
-        val plantAdaper = MyAdapter( userArrayList)
+        val plantAdaper = MyAdapter( this,userArrayList)
         /*
         rvPlantList.adapter = plantAdaper
 

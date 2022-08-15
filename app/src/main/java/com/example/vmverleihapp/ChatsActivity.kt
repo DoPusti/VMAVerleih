@@ -1,5 +1,4 @@
 package com.example.vmverleihapp
-
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -8,10 +7,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.squareup.picasso.Picasso
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Item
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.chat_user_row.view.*
@@ -37,6 +32,7 @@ class ChatsActivity : AppCompatActivity() {
         dbRef.addListenerForSingleValueEvent(object: ValueEventListener{
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                /*
                 val adapter = GroupAdapter<GroupieViewHolder>()
                 for (child in snapshot.children) {
                     val chat = child.getValue(ChatUser::class.java)
@@ -46,6 +42,8 @@ class ChatsActivity : AppCompatActivity() {
                     }
 
                 }
+
+
                 adapter.setOnItemClickListener {  item, view ->
                     val intent = Intent(view.context, ChatLogActivity::class.java)
                     val chatUserItem = item as ChatUserItem
@@ -54,7 +52,7 @@ class ChatsActivity : AppCompatActivity() {
 
                     //finish()
                 }
-                chatsView.adapter = adapter
+                chatsView.adapter = adapter*/
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -68,7 +66,7 @@ class ChatsActivity : AppCompatActivity() {
     }
 
 }
-
+/*
 @Parcelize
 class ChatUser(val email: String, val imgUri: String, val id: String) : Parcelable
 {
@@ -87,3 +85,7 @@ class ChatUserItem(val chatUser: ChatUser) : Item<GroupieViewHolder>()
     }
 
 }
+
+
+
+ */

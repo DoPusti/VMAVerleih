@@ -27,6 +27,7 @@
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/drawable/shape_image_view_border.xml" value="0.2345" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/drawable/user.xml" value="0.1535" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_add_items.xml" value="0.2140625" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_chats.xml" value="0.146875" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_delete_user.xml" value="0.15" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_edit_profile.xml" value="0.28489583333333335" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_item_detail.xml" value="0.2203125" />
@@ -35,6 +36,9 @@
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_sign_in.xml" value="0.22" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/activity_sign_up.xml" value="0.14351851851851852" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/all_items.xml" value="0.17083333333333334" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/chat_from_row.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/chat_to_row.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/chat_user_row.xml" value="0.22083333333333333" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/layout/user_item.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/domin/AndroidStudioProjects/VMVerleihApp/app/src/main/res/menu/main_menu.xml" value="0.21197916666666666" />
       </map>

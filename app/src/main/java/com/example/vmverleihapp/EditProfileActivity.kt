@@ -62,51 +62,11 @@ class EditProfileActivity : AppCompatActivity() {
         }
         buDeleteUser.setOnClickListener {
 
-            var dialog = AlertDialog.Builder(this)
-            dialog.setTitle("Sind sie sicher?")
-            dialog.setMessage("Beim Löschen dieses Account werden alle dazugehörigen Daten ebenfalls gelöscht!")
+            Log.i("Delete User", "PositivButton gedrückt")
+            val intent = Intent(this@EditProfileActivity,DeleteUserActivity::class.java)
+            startActivityForResult(intent, DELETE_USER_REQUEST_CODE )
+            progressBar.visibility = View.VISIBLE
 
-
-            dialog.setPositiveButton("Löschen") { _, _ ->
-                Log.i("Delete User", "PositivButton gedrückt")
-                deleteUserData()
-                progressBar.visibility = View.VISIBLE
-                val user = FirebaseAuth.getInstance().currentUser
-
-                val credential =
-                    EmailAuthProvider.getCredential("dominik.pustofka@gmx.net", "123456789")
-                user!!.reauthenticate(credential)
-                    .addOnCompleteListener { Log.i("Delete User", "Re-Authentifizierung") }
-
-
-                user.delete().addOnCompleteListener { task ->
-
-
-                    if (task.isSuccessful) {
-                        progressBar.visibility = View.GONE
-                        Log.i("EditProfile", "Account gelöscht")
-                        Toast.makeText(this, "Daten wurden gelöscht!", Toast.LENGTH_LONG).show()
-                        val intent = Intent(this@EditProfileActivity, SignInActivity::class.java)
-                        //deleteUserData()
-                        FirebaseAuth.getInstance().signOut()
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        startActivity(intent)
-                    }
-
-
-                }
-
-
-            }
-
-
-            dialog.setNegativeButton("Abbrechen") { _, _ ->
-                Toast.makeText(this, "Löschen wurde abgebrochen", Toast.LENGTH_LONG).show()
-
-            }
-            dialog.create()
-            dialog.show()
         }
         editProfilImage.requestFocus()
         if (et_email.text.isEmpty()) {
@@ -173,65 +133,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun deleteUserData() {
-        Log.i("Delete User", "DeleteUserData wird gestartet")
-        dbref =
-            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("Users")
-        dbref.addValueEventListener(object : ValueEventListener {
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                if (snapshot.exists()) {
-                    for (userSnapshot in snapshot.children) {
-                        val userItems = userSnapshot.getValue(UserAuth::class.java)
-                        if (userItems!!.mail == firebaseAuth.currentUser!!.email.toString()) {
-                            Log.i("Delete User", "MailEintrag gefunden")
-                            try {
-                                userSnapshot.ref.removeValue()
-                            } catch (e: NullPointerException) {
-                                Log.e("EditProfile", "Nullpointerexcpetion $e")
-                            }
-
-                        }
-                    }
-                }
-
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
-        dbref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("Profile")
-        dbref.addValueEventListener(object : ValueEventListener {
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                if (snapshot.exists()) {
-                    for (userSnapshot in snapshot.children) {
-                        val profil = userSnapshot.getValue(Profil::class.java)
-                        if (profil!!.email  == firebaseAuth.currentUser!!.email.toString()) {
-                            userSnapshot.ref.removeValue()
-                        }
-                    }
-                }
-
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
-
-    }
 
     /* Auswahl 2 von "Bild hinzufügen" - Foto mit Kamera*/
     private fun takePhotoWithCamera() {
@@ -418,6 +320,9 @@ class EditProfileActivity : AppCompatActivity() {
                 editProfilImage.setImageBitmap(photoBitmap)
 
             }
+            if(requestCode == DELETE_USER_REQUEST_CODE) {
+
+            }
         } else {
             Log.e("Activity", "Abgebrochen oder zurück gedrückt")
         }
@@ -427,6 +332,7 @@ class EditProfileActivity : AppCompatActivity() {
     companion object {
         private const val ITEM_VIEW_REQUEST_CODE = 2
         private const val CAMERA = 3
+        private const val DELETE_USER_REQUEST_CODE = 4
 
     }
 }
