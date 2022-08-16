@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_items.*
+import java.lang.NullPointerException
 
 class ItemsActivity : AppCompatActivity() {
     private lateinit var dbref: DatabaseReference
@@ -39,7 +40,6 @@ class ItemsActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             startActivityForResult(intent, ITEM_ADD_REQUEST_CODE)
         }
-
     }
     private fun getUserData() {
 
@@ -53,11 +53,17 @@ class ItemsActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        val userID = userSnapshot.getValue(UserAuth::class.java)
-                        if (userID!!.mail == firebaseAuth.currentUser!!.email.toString()) {
-                            val user = User(userID.name,userID!!.description, userID!!.status,userID!!.imgUri)
-                            userArrayList.add(user)
+                        try {
+                            val userID = userSnapshot.getValue(UserAuth::class.java)
+                            if (userID!!.mail == firebaseAuth.currentUser!!.email.toString()) {
+                                val user = User(userID.name, userID.description, userID.status, userID.imgUri)
+                                userArrayList.add(user)
+                            }
+
+                        }catch (e : NullPointerException) {
+                            Log.e("GetUserData", "Keine Daten vorhanden")
                         }
+
                     }
 
                 }
@@ -76,6 +82,7 @@ class ItemsActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun setupItemRecyclerView(itemList: ArrayList<User>) {
         userRecyclerView = findViewById(R.id.userList)
         userRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -139,6 +146,7 @@ class ItemsActivity : AppCompatActivity() {
 
     companion object {
         private const val ITEM_ADD_REQUEST_CODE = 3
+        private const val ITEM_DETAIL_REQUEST_CODE = 4
 
     }
 }

@@ -23,7 +23,9 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import kotlinx.android.synthetic.main.activity_add_items.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
+import java.io.IOException
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -32,6 +34,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var dbref: DatabaseReference
     private var firebaseStore: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
+    private var filePath: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +60,22 @@ class EditProfileActivity : AppCompatActivity() {
             startActivityForResult(intent, ITEM_VIEW_REQUEST_CODE)
         }
         editProfilImage.setOnClickListener {
-            takePhotoWithCamera()
+            val pictureDialog = AlertDialog.Builder(this)
+            pictureDialog.setTitle("Bitte Aktion auswählen")
+            val chooseOne: String = "Foto aus Galerie"
+            val chooseTwo: String = "Foto aufnehmen"
+            val pictureDialogItems = arrayOf(
+                chooseOne,
+                chooseTwo
+            )
+            pictureDialog.setItems(pictureDialogItems) { _, choose ->
+                when (choose) {
+                    0 -> launchGallery()
+                    1 -> takePhotoWithCamera()
+                }
+
+            }
+            pictureDialog.show()
 
         }
         buDeleteUser.setOnClickListener {
@@ -134,6 +152,14 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
 
+    private fun launchGallery() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"),
+            PICK_IMAGE_REQUEST
+        )
+    }
 
     /* Auswahl 2 von "Bild hinzufügen" - Foto mit Kamera*/
     private fun takePhotoWithCamera() {
@@ -323,6 +349,20 @@ class EditProfileActivity : AppCompatActivity() {
             if(requestCode == DELETE_USER_REQUEST_CODE) {
 
             }
+            if (requestCode == PICK_IMAGE_REQUEST) {
+                if (data == null || data.data == null) {
+                    return
+                }
+
+                filePath = data.data
+                try {
+                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+                    Log.i("EditProfileActitivty",bitmap.toString())
+                    editProfilImage.setImageBitmap(bitmap)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
         } else {
             Log.e("Activity", "Abgebrochen oder zurück gedrückt")
         }
@@ -333,6 +373,7 @@ class EditProfileActivity : AppCompatActivity() {
         private const val ITEM_VIEW_REQUEST_CODE = 2
         private const val CAMERA = 3
         private const val DELETE_USER_REQUEST_CODE = 4
+        private const val PICK_IMAGE_REQUEST = 5
 
     }
 }

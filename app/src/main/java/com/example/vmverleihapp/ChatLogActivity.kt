@@ -109,7 +109,7 @@ class ChatMessage(val id: String, val text: String, val fromId: String, val toId
     constructor() : this("","", "", "", -1)
 }
 
-class ChatFromItem(val text: String, val timestamp: String) : Item<GroupieViewHolder>()
+class ChatFromItem(val text: String, private val timestamp: String) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_message_from.text = text
@@ -122,7 +122,7 @@ class ChatFromItem(val text: String, val timestamp: String) : Item<GroupieViewHo
 
 }
 
-class ChatToItem(val text: String, val timestamp: String) : Item<GroupieViewHolder>()
+class ChatToItem(val text: String, private val timestamp: String) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_message_to.text = text

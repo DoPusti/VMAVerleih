@@ -10,11 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_delete_user.*
+import okhttp3.Dispatcher
+import kotlin.coroutines.CoroutineContext
 
 class DeleteUserActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var dbref: DatabaseReference
+    private var storageReference: StorageReference? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_delete_user)
@@ -23,7 +28,7 @@ class DeleteUserActivity : AppCompatActivity() {
 
         buDelete.setOnClickListener {
 
-            var dialog = AlertDialog.Builder(this)
+            val dialog = AlertDialog.Builder(this)
             dialog.setTitle("Sind sie sicher?")
             dialog.setMessage("Beim Löschen dieses Account werden alle dazugehörigen Daten ebenfalls gelöscht!")
 
@@ -40,7 +45,6 @@ class DeleteUserActivity : AppCompatActivity() {
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 user.delete().addOnCompleteListener { task ->
-
 
                                     if (task.isSuccessful) {
                                         //progressBar.visibility = View.GONE
@@ -67,7 +71,7 @@ class DeleteUserActivity : AppCompatActivity() {
                                             this,
                                             "Löschen des Kontos fehlgeschlagen",
                                             Toast.LENGTH_LONG
-                                        )
+                                        ).show()
                                     }
 
                                 }
@@ -126,12 +130,14 @@ class DeleteUserActivity : AppCompatActivity() {
                     for (userSnapshot in snapshot.children) {
                         val userItems = userSnapshot.getValue(UserAuth::class.java)
                         if (userItems!!.mail == inMail) {
+                            val storageUri = userItems.imgUri
                             Log.i("Delete User", "MailEintrag gefunden")
                             try {
                                 userSnapshot.ref.removeValue()
                             } catch (e: NullPointerException) {
                                 Log.e("EditProfile", "Nullpointerexcpetion $e")
                             }
+                            deleteStorageUri(storageUri.toString())
 
                         }
                     }
@@ -161,8 +167,6 @@ class DeleteUserActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -171,6 +175,21 @@ class DeleteUserActivity : AppCompatActivity() {
 
         })
 
+
+    }
+    private fun deleteStorageUri(inImageUri : String) {
+        // Create a storage reference from our app
+        val storageReference = FirebaseStorage.getInstance().reference
+
+        // Create a reference to the file to delete
+        val desertRef = storageReference.child("myImages/$inImageUri")
+
+        // Delete the file
+        desertRef.delete().addOnSuccessListener {
+            Log.i("Delete User", "Erfolgreiches Löschen von $inImageUri")
+        }.addOnFailureListener {
+            Log.i("Delete User", "Fehler beim Löschen von $inImageUri")
+        }
 
     }
 }
