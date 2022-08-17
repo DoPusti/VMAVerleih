@@ -71,6 +71,7 @@ class ItemsActivity : AppCompatActivity() {
                     userList.visibility = View.VISIBLE
                     tvNoRecordsAvailable.visibility = View.GONE
                     setupItemRecyclerView(userArrayList)
+
                 } else {
                     userList.visibility = View.GONE
                     tvNoRecordsAvailable.visibility = View.VISIBLE
@@ -88,10 +89,20 @@ class ItemsActivity : AppCompatActivity() {
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf()
-        userRecyclerView.adapter = MyAdapter(this,itemList)
+        val itemAdapter = MyAdapter(this,itemList)
+        userRecyclerView.adapter = itemAdapter
+        itemAdapter.setOnClickListener(object: MyAdapter.OnClickListener{
+            override fun onClick(position: Int, model: User) {
+                Log.i("OnCliCk",itemList[position].name.toString())
+                val intent = Intent(this@ItemsActivity,ItemDetailActivity::class.java)
+                intent.putExtra(ITEM_DETAIL_NAME,itemList[position].name.toString())
+                intent.putExtra(ITEM_DETAIL_DESC,itemList[position].description.toString())
+                intent.putExtra(ITEM_DETAIL_STATUS,itemList[position].status.toString())
+                intent.putExtra(ITEM_DETAIL_IMGURI,itemList[position].imgUri.toString())
+                startActivity(intent)
+            }
+        })
 
-
-        val plantAdaper = MyAdapter( this,userArrayList)
         /*
         rvPlantList.adapter = plantAdaper
 
@@ -147,6 +158,10 @@ class ItemsActivity : AppCompatActivity() {
     companion object {
         private const val ITEM_ADD_REQUEST_CODE = 3
         private const val ITEM_DETAIL_REQUEST_CODE = 4
+        private const val ITEM_DETAIL_NAME = "ITEM_DETAIL_NAME"
+        private const val ITEM_DETAIL_DESC = "ITEM_DETAIL_DESC"
+        private const val ITEM_DETAIL_STATUS = "ITEM_DETAIL_STATUS"
+        private const val ITEM_DETAIL_IMGURI = "ITEM_DETAIL_IMGURI"
 
     }
 }

@@ -34,7 +34,6 @@ class AddItemsActivity : AppCompatActivity() {
     private lateinit var database: FirebaseDatabase
     private lateinit var referance: DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var imageURI: Uri
     private var firebaseStore: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
 
@@ -50,6 +49,7 @@ class AddItemsActivity : AppCompatActivity() {
             onBackPressed()
 
         }
+
         firebaseStore = FirebaseStorage.getInstance()
         storageReference = FirebaseStorage.getInstance().reference
 
@@ -118,6 +118,7 @@ class AddItemsActivity : AppCompatActivity() {
             ).onSameThread()
             .check()
     }
+
     /* Wenn Berechtigung nicht vorliegt */
     private fun showRationaleDialogForPermissions() {
         AlertDialog.Builder(this).setMessage("Es liegen keine Berechtigungen vor")
@@ -198,8 +199,8 @@ class AddItemsActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
@@ -218,9 +219,8 @@ class AddItemsActivity : AppCompatActivity() {
                 }
             }
          } else if (requestCode == CAMERA) {
-            Log.i("ActivityResult",data!!.extras!!.get("data").toString())
-            val photoBitmap: Bitmap = data.extras!!.get("data") as Bitmap
-            ivPlaceImage!!.setImageBitmap(photoBitmap)
+            val photoBitmap: Bitmap = data!!.extras!!.get("data") as Bitmap
+            ivPlaceImage.setImageBitmap(photoBitmap)
          }
             else if (resultCode == Activity.RESULT_CANCELED) {
                 Log.e("Cancelled", "Cancelled")
@@ -234,6 +234,7 @@ class AddItemsActivity : AppCompatActivity() {
             private const val CAMERA = 2
             private const val IMAGE = 3
             private const val PICK_IMAGE_REQUEST = 4
+            private const val PERMISSION_CAMERA = 5
 
 
         }
