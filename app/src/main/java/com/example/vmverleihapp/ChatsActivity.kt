@@ -20,7 +20,7 @@ class ChatsActivity : AppCompatActivity() {
 
     val adapter = GroupAdapter<GroupieViewHolder>()
     val userHashMap : HashMap<String, ChatUser> = HashMap<String, ChatUser> ()
-    val latestMessagesHashMap : HashMap<String, ChatMessage> = HashMap<String, ChatMessage> ()
+    val latestMessagesHashMap : HashMap<String, Pair<String, ChatMessage>> = HashMap<String,  Pair<String,ChatMessage>> ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,10 +61,10 @@ class ChatsActivity : AppCompatActivity() {
 
     private fun refreshRecyclerViewMessages(){
         adapter.clear()
-        latestMessagesHashMap.values.sortedByDescending { i -> i.timestamp }.forEach {
-            if (userHashMap.containsKey(it.toId)){
-                var user = userHashMap[it.toId]
-                var latestMessage = LatestMessageItem(it.text, it.timestamp, user?.nachname!!,it.toId)
+        latestMessagesHashMap.values.sortedByDescending { i -> i.second.timestamp }.forEach {
+            if (userHashMap.containsKey(it.first)){
+                var user = userHashMap[it.first]
+                var latestMessage = LatestMessageItem(it.second.text, it.second.timestamp, user?.nachname!!,it.second.toId)
                 adapter.add(latestMessage)
             }
         }
@@ -98,12 +98,8 @@ class ChatsActivity : AppCompatActivity() {
             private fun setMessage(id: String, message: ChatMessage?)
             {
                 if (message != null){
-                  //  val user = userHashMap[message.toId]
-                  //  if (user != null){
-                  //      var latestMessage = LatestMessageItem(message.text, message.timestamp,message.nachname,message.toId)
-                        latestMessagesHashMap[id] = message
-                        refreshRecyclerViewMessages()
-                   // }
+                    latestMessagesHashMap[id] = Pair(id, message)
+                    refreshRecyclerViewMessages()
                 }
             }
 
