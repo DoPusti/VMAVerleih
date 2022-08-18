@@ -152,29 +152,16 @@ class DeleteUserActivity : AppCompatActivity() {
 
         })
 
-        dbref =
-            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("Profile")
-        dbref.addValueEventListener(object : ValueEventListener {
+        val userId = FirebaseAuth.getInstance().uid
 
-            override fun onDataChange(snapshot: DataSnapshot) {
+        dbref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$userId")
+        dbref.removeValue()
 
-                if (snapshot.exists()) {
-                    for (userSnapshot in snapshot.children) {
-                        val profil = userSnapshot.getValue(Profil::class.java)
-                        if (profil!!.email == inMail) {
-                            userSnapshot.ref.removeValue()
-                        }
-                    }
-                }
-            }
+        dbref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$userId")
+        dbref.removeValue()
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
+        dbref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Profile/$userId")
+        dbref.removeValue()
 
     }
     private fun deleteStorageUri(inImageUri : String) {

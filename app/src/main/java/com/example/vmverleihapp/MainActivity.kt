@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vmverleihapp.databinding.ActivityMainBinding
@@ -16,6 +17,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_items.*
 import kotlinx.android.synthetic.main.activity_items.tvNoRecordsAvailable
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +28,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRecyclerView: RecyclerView
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var messagesIcon: MenuItem
+
+    val latestMessagesHashMap : HashMap<String, Boolean> = HashMap<String, Boolean> ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +44,16 @@ class MainActivity : AppCompatActivity() {
 
 
         getAllData()
-
+        listenForLatestMessages()
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.main_menu, menu)
+
+        messagesIcon = menu?.children?.toList()?.get(1)!!
+
         return true
     }
 
@@ -114,6 +122,66 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
+        })
+    }
+
+    private fun refreshMessagesIcon()
+    {
+        val latestMessagedRead = latestMessagesHashMap.values.toList()
+        val predicate: (Boolean) -> Boolean = { !it }
+        val anyUnreadMessages = latestMessagedRead.any(predicate)
+
+        if (anyUnreadMessages)
+        {
+            messagesIcon.setIcon(R.drawable.ic_search_black_24dp)
+        }
+        else {
+            messagesIcon.setIcon(R.drawable.ic_message_black_24dp)
+        }
+    }
+
+    private fun listenForLatestMessages(){
+
+        val fromId = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$fromId")
+
+        ref.addChildEventListener(object: ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val message = snapshot.getValue(ChatMessage::class.java)
+                setMessage(snapshot.key!!, message)
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val message = snapshot.getValue(ChatMessage::class.java)
+                setMessage(snapshot.key!!, message)
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                removeMessage(snapshot.key!!)
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+            private fun setMessage(id: String, message: ChatMessage?)
+            {
+                if (message != null){
+                    latestMessagesHashMap[id] = message.read
+                    refreshMessagesIcon()
+                }
+            }
+
+            private fun removeMessage(id: String)
+            {
+                if ( latestMessagesHashMap.containsKey(id)){
+                    latestMessagesHashMap.remove(id)
+                }
+                refreshMessagesIcon()
+            }
+
         })
     }
 

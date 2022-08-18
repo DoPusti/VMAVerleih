@@ -20,7 +20,7 @@ class ChatsActivity : AppCompatActivity() {
 
     val adapter = GroupAdapter<GroupieViewHolder>()
     val userHashMap : HashMap<String, ChatUser> = HashMap<String, ChatUser> ()
-    val latestMessagesHashMap : HashMap<String, LatestMessageItem> = HashMap<String, LatestMessageItem> ()
+    val latestMessagesHashMap : HashMap<String, ChatMessage> = HashMap<String, ChatMessage> ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +35,18 @@ class ChatsActivity : AppCompatActivity() {
         chats_latest_Messages.adapter = adapter
 
         adapter.setOnItemClickListener {  item, view ->
+
             val intent = Intent(view.context, ChatLogActivity::class.java)
             val chatUserItem = item as LatestMessageItem
-            intent.putExtra(USER_KEY, chatUserItem.user)
+            val toId = chatUserItem.toId
+
+            val fromId = FirebaseAuth.getInstance().uid
+            val ref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$fromId/$toId")
+            ref.child("read").setValue(true)
+
+            var user = userHashMap[toId]
+
+            intent.putExtra(USER_KEY, user)
             startActivity(intent)
 
             //finish()
@@ -53,7 +62,11 @@ class ChatsActivity : AppCompatActivity() {
     private fun refreshRecyclerViewMessages(){
         adapter.clear()
         latestMessagesHashMap.values.sortedByDescending { i -> i.timestamp }.forEach {
-            adapter.add(it)
+            if (userHashMap.containsKey(it.toId)){
+                var user = userHashMap[it.toId]
+                var latestMessage = LatestMessageItem(it.text, it.timestamp, user?.nachname!!,it.toId)
+                adapter.add(latestMessage)
+            }
         }
     }
 
@@ -85,12 +98,12 @@ class ChatsActivity : AppCompatActivity() {
             private fun setMessage(id: String, message: ChatMessage?)
             {
                 if (message != null){
-                    val user = userHashMap[message.toId]
-                    if (user != null){
-                        var latestMessage = LatestMessageItem(message.text, message.timestamp,user)
-                        latestMessagesHashMap[id] = latestMessage
+                  //  val user = userHashMap[message.toId]
+                  //  if (user != null){
+                  //      var latestMessage = LatestMessageItem(message.text, message.timestamp,message.nachname,message.toId)
+                        latestMessagesHashMap[id] = message
                         refreshRecyclerViewMessages()
-                    }
+                   // }
                 }
             }
 
@@ -126,6 +139,7 @@ class ChatsActivity : AppCompatActivity() {
             {
                 if (user != null){
                     userHashMap[user.id] = user
+                    refreshRecyclerViewMessages()
                 }
             }
 
@@ -144,10 +158,10 @@ class ChatUser(val nachname: String, val imgUri: String, val id: String) : Parce
     constructor() : this("","", "")
 }
 
-class LatestMessageItem(val latestMessage: String, val timestamp: Long, val user: ChatUser) : Item<GroupieViewHolder>()
+class LatestMessageItem(val latestMessage: String, val timestamp: Long, val nachname: String, val toId: String) : Item<GroupieViewHolder>()
 {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.chat_user_name.text = user.nachname
+        viewHolder.itemView.chat_user_name.text = nachname
         viewHolder.itemView.chat_latest_Message.text = latestMessage
        // Picasso.get().load(chatUser.imgUri).into(viewHolder.itemView.chat_image)
     }
