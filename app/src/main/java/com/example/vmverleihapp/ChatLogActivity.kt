@@ -25,7 +25,7 @@ class ChatLogActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         toUser = intent.getParcelableExtra<ChatUser>(ChatsActivity.USER_KEY)
-        supportActionBar?.title = toUser?.email
+        supportActionBar?.title = toUser?.nachname
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {onBackPressed()}
@@ -94,7 +94,7 @@ class ChatLogActivity : AppCompatActivity() {
 
         val fromReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$fromId/$toId").push()
 
-        val message = ChatMessage(fromReference.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000 )
+        val message = ChatMessage(fromReference.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000, false )
         fromReference.setValue(message).addOnSuccessListener {
             message_chat_log.text.clear()
             recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
@@ -102,11 +102,17 @@ class ChatLogActivity : AppCompatActivity() {
 
         val toReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$toId/$fromId").push()
         toReference.setValue(message)
+
+        val latestMessagesFromRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$fromId/$toId")
+        latestMessagesFromRef.setValue(message)
+
+        val latestMessagesToRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$toId/$fromId")
+        latestMessagesToRef.setValue(message)
     }
 }
 
-class ChatMessage(val id: String, val text: String, val fromId: String, val toId: String, val timestamp: Long){
-    constructor() : this("","", "", "", -1)
+class ChatMessage(val id: String, val text: String, val fromId: String, val toId: String, val timestamp: Long, val read: Boolean){
+    constructor() : this("","", "", "", -1, false)
 }
 
 class ChatFromItem(val text: String, private val timestamp: String) : Item<GroupieViewHolder>()
