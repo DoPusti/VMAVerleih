@@ -126,6 +126,7 @@ class ChatsActivity : AppCompatActivity() {
             {
                 if (user != null){
                     userHashMap[user.id] = user
+                    refreshRecyclerViewMessages()
                 }
             }
 

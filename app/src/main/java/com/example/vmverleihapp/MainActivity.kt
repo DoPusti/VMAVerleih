@@ -16,6 +16,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_items.*
 import kotlinx.android.synthetic.main.activity_items.tvNoRecordsAvailable
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRecyclerView: RecyclerView
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
     private lateinit var firebaseAuth: FirebaseAuth
+
+    val latestMessagesHashMap : HashMap<String, Boolean> = HashMap<String, Boolean> ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
 
         getAllData()
-
+        listenForLatestMessages()
 
     }
 
@@ -114,6 +117,65 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
+        })
+    }
+
+    private fun refreshMessagesIcon()
+    {
+        //var viewObject = findViewById(R.id.chats)
+        //if (viewObject != null){
+        //    val messagesIcon = viewObject as MenuItem
+        //    messagesIcon.setIcon(R.drawable.ic_search_black_24dp)
+        //}
+        //R.menu.main_menu.chats.icon =
+
+    }
+
+    private fun listenForLatestMessages(){
+
+        val fromId = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$fromId")
+
+        ref.addChildEventListener(object: ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val message = snapshot.getValue(ChatMessage::class.java)
+                setMessage(snapshot.key!!, message)
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val message = snapshot.getValue(ChatMessage::class.java)
+                setMessage(snapshot.key!!, message)
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                removeMessage(snapshot.key!!)
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+            private fun setMessage(id: String, message: ChatMessage?)
+            {
+                if (message != null){
+                    //val user = userHashMap[message.toId] TODO nur wenn Benutzer noch existiert
+                    //if (user != null){
+                        latestMessagesHashMap[id] = message.read
+                        refreshMessagesIcon()
+                    //}
+                }
+            }
+
+            private fun removeMessage(id: String)
+            {
+                if ( latestMessagesHashMap.containsKey(id)){
+                    latestMessagesHashMap.remove(id)
+                    refreshMessagesIcon()
+                }
+            }
+
         })
     }
 

@@ -94,20 +94,21 @@ class ChatLogActivity : AppCompatActivity() {
 
         val fromReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$fromId/$toId").push()
 
-        val message = ChatMessage(fromReference.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000, false )
-        fromReference.setValue(message).addOnSuccessListener {
+        val fromMessage = ChatMessage(fromReference.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000, true )
+        fromReference.setValue(fromMessage).addOnSuccessListener {
             message_chat_log.text.clear()
             recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
          }
 
-        val toReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$toId/$fromId").push()
-        toReference.setValue(message)
-
         val latestMessagesFromRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$fromId/$toId")
-        latestMessagesFromRef.setValue(message)
+        latestMessagesFromRef.setValue(fromMessage)
+
+        val toMessage = ChatMessage(fromReference.key!!, message_chat_log.text.toString(), fromId, toId!!, System.currentTimeMillis() / 1000, false )
+        val toReference = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Messages/$toId/$fromId").push()
+        toReference.setValue(toMessage)
 
         val latestMessagesToRef = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$toId/$fromId")
-        latestMessagesToRef.setValue(message)
+        latestMessagesToRef.setValue(toMessage)
     }
 }
 
