@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
         if (anyUnreadMessages)
         {
-            messagesIcon.setIcon(R.drawable.ic_search_black_24dp)
+            messagesIcon.setIcon(R.drawable.ic_message_red_dot_black_24dp)
         }
         else {
             messagesIcon.setIcon(R.drawable.ic_message_black_24dp)
