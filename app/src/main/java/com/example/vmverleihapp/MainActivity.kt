@@ -128,12 +128,12 @@ class MainActivity : AppCompatActivity() {
     private fun refreshMessagesIcon()
     {
         val latestMessagedRead = latestMessagesHashMap.values.toList()
-        val predicate: (Boolean) -> Boolean = { it }
+        val predicate: (Boolean) -> Boolean = { !it }
         val anyUnreadMessages = latestMessagedRead.any(predicate)
 
         if (anyUnreadMessages)
         {
-            messagesIcon.setIcon(R.drawable.ic_message_red_dot_black_24dp)
+            messagesIcon.setIcon(R.drawable.ic_search_black_24dp)
         }
         else {
             messagesIcon.setIcon(R.drawable.ic_message_black_24dp)
