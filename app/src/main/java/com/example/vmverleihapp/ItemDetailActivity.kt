@@ -82,6 +82,7 @@ class ItemDetailActivity : AppCompatActivity() {
 
         })
     }
+
     private fun deleteStorageUri(inImageUri : String) {
         // Create a storage reference from our app
         val storageReference = FirebaseStorage.getInstance().reference
