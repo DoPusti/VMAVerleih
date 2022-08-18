@@ -59,6 +59,8 @@ class AddItemsActivity : AppCompatActivity() {
         referance = database.getReference("Users")
         buSave.setOnClickListener {
             uploadImage()
+            buSave.isEnabled = false
+            buSave.isClickable = false
             Thread.sleep(1_000)
             setResult(Activity.RESULT_OK)
             finish()
