@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vmverleihapp.databinding.ActivityMainBinding
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRecyclerView: RecyclerView
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var messagesIcon: MenuItem
 
     val latestMessagesHashMap : HashMap<String, Boolean> = HashMap<String, Boolean> ()
 
@@ -49,6 +51,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.main_menu, menu)
+
+        messagesIcon = menu?.children?.toList()?.get(1)!!
+
         return true
     }
 
@@ -122,13 +127,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshMessagesIcon()
     {
-        //var viewObject = findViewById(R.id.chats)
-        //if (viewObject != null){
-        //    val messagesIcon = viewObject as MenuItem
-        //    messagesIcon.setIcon(R.drawable.ic_search_black_24dp)
-        //}
-        //R.menu.main_menu.chats.icon =
+        val latestMessagedRead = latestMessagesHashMap.values.toList()
+        val predicate: (Boolean) -> Boolean = { it }
+        val anyUnreadMessages = latestMessagedRead.any(predicate)
 
+        if (anyUnreadMessages)
+        {
+            messagesIcon.setIcon(R.drawable.ic_message_red_dot_black_24dp)
+        }
+        else {
+            messagesIcon.setIcon(R.drawable.ic_message_black_24dp)
+        }
     }
 
     private fun listenForLatestMessages(){
@@ -160,11 +169,8 @@ class MainActivity : AppCompatActivity() {
             private fun setMessage(id: String, message: ChatMessage?)
             {
                 if (message != null){
-                    //val user = userHashMap[message.toId] TODO nur wenn Benutzer noch existiert
-                    //if (user != null){
-                        latestMessagesHashMap[id] = message.read
-                        refreshMessagesIcon()
-                    //}
+                    latestMessagesHashMap[id] = message.read
+                    refreshMessagesIcon()
                 }
             }
 
@@ -172,8 +178,8 @@ class MainActivity : AppCompatActivity() {
             {
                 if ( latestMessagesHashMap.containsKey(id)){
                     latestMessagesHashMap.remove(id)
-                    refreshMessagesIcon()
                 }
+                refreshMessagesIcon()
             }
 
         })
