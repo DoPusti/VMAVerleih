@@ -15,11 +15,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="@color/toolbar_background"
             app:navigationIcon="?attr/homeAsUpIndicator"/>
-
-        <!--android:visibility="gone"
-            tools:visibility="gone"-->
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chats_latest_Messages"

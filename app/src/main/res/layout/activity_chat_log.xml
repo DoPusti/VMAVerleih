@@ -4,48 +4,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChatLogActivity"
-    android:background="@color/yellow">
+    tools:context=".ChatLogActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?attr/homeAsUpIndicator" />
 
-    <EditText
-        android:id="@+id/message_chat_log"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:ems="10"
-        android:hint="Nachricht ..."
-        android:background="@color/white"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/send_button_chat_log"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/send_button_chat_log"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="Senden"
-        android:textStyle="bold"
-        android:background="@drawable/shape_button_rounded"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/editText_Group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="200dp"
+        android:background="@color/toolbar_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="6dp">
+
+
+        <EditText
+            android:id="@+id/message_chat_log"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:background="@color/white"
+            android:hint="@string/text_message_hint"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minHeight="50dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="2dp"
+            android:scrollHorizontally="false"
+            android:singleLine="false"
+            android:maxLines ="4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/send_button_chat_log"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <Button
+            android:id="@+id/send_button_chat_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_button_rounded"
+            android:text="@string/text_send_button"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/message_chat_log" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_chat_log"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginTop="?attr/actionBarSize"
-        app:layout_constraintBottom_toTopOf="@+id/message_chat_log"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/editText_Group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -39,25 +39,21 @@
             android:label="ADD ITEMS"
             android:parentActivityName=".EditProfileActivity"
             android:screenOrientation="fullSensor"
-            android:theme="@style/AddItemNoActionBar"
             tools:replace="screenOrientation" />
         <activity
             android:name=".ItemsActivity"
             android:exported="true"
             android:parentActivityName=".EditProfileActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AddItemNoActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EditProfileActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AddItemNoActionBar" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SignInActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/AddItemNoActionBar">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
