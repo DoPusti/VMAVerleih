@@ -5,5 +5,9 @@ data class Profil(
     var nachname: String? = null,
     val email: String? = null,
     var contact: String? = null,
-    var imgUri : String? = null
+    var imgUri : String? = null,
+    var id: String?
 )
+{
+    constructor() : this("","", "", "", "", "")
+}
