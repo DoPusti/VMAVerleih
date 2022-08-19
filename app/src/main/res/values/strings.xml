@@ -3,4 +3,5 @@
     <string name="text_placeHolder">Dies ist ein Platzhalter</string>
     <string name="text_send_button">Senden</string>
     <string name="text_message_hint">Nachricht ...</string>
+    <string name="text_Messages">Nachrichten</string>
 </resources>

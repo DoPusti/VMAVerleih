@@ -27,7 +27,6 @@ class ChatsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chats)
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Chats"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener {onBackPressed()}
