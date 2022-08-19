@@ -6,6 +6,7 @@ import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -51,10 +52,8 @@ class ChatsActivity : AppCompatActivity() {
             //finish()
         }
 
-
         getUserData()
         listenForLatestMessages()
-        //fetchChats()
 
     }
 
@@ -158,7 +157,20 @@ class LatestMessageItem(val latestMessage: String, val timestamp: Long, val nach
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.chat_user_name.text = nachname
         viewHolder.itemView.chat_latest_Message.text = latestMessage
-       // Picasso.get().load(chatUser.imgUri).into(viewHolder.itemView.chat_image)
+
+        val ref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Profile/$toId")
+        ref.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val user = snapshot.getValue(ChatUser::class.java)
+                if (user!= null && user.imgUri.isNotEmpty()) {
+                    Picasso.get().load(user.imgUri).into(viewHolder.itemView.chat_image)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+
     }
 
     override fun getLayout(): Int {
