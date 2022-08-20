@@ -50,6 +50,7 @@ class ItemDetailActivity : AppCompatActivity() {
             } else {
                 spinnerStatus.setText(stati[0])
             }
+
             spinnerStatus.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
