@@ -192,16 +192,15 @@ class MainActivity : AppCompatActivity() {
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf()
         val itemAdapter = MyAdapter(this,itemList)
-        userRecyclerView.adapter = MyAdapter(this,itemList)
-
-        itemAdapter.setOnClickListener(object : MyAdapter.OnClickListener {
+        userRecyclerView.adapter = itemAdapter
+        itemAdapter.setOnClickListener(object: MyAdapter.OnClickListener{
             override fun onClick(position: Int, model: User) {
-                val intent = Intent(this@MainActivity, ItemDetailActivity::class.java)
-                intent.putExtra(ITEM_DETAIL_NAME,model.name.toString())
-                intent.putExtra(ITEM_DETAIL_DESC,model.description.toString())
-                intent.putExtra(ITEM_DETAIL_STATUS,model.status.toString())
-                intent.putExtra(ITEM_DETAIL_IMGURI,model.imgUri.toString())
-                Log.i("Adapter","wird gestartet")
+                Log.i("OnCliCk",itemList[position].name.toString())
+                val intent = Intent(this@MainActivity,ItemInquiryActivity::class.java)
+                intent.putExtra(ITEM_DETAIL_NAME,itemList[position].name.toString())
+                intent.putExtra(ITEM_DETAIL_DESC,itemList[position].description.toString())
+                intent.putExtra(ITEM_DETAIL_STATUS,itemList[position].status.toString())
+                intent.putExtra(ITEM_DETAIL_IMGURI,itemList[position].imgUri.toString())
                 startActivity(intent)
             }
         })
