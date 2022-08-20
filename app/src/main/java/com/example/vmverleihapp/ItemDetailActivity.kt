@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_add_items.*
 import kotlinx.android.synthetic.main.activity_item_detail.*
 import java.io.File
 
@@ -25,11 +26,19 @@ class ItemDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSupportActionBar(toolbarItemDetail)
         setContentView(R.layout.activity_item_detail)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         name = intent.getStringExtra(ITEM_DETAIL_NAME).toString()
         description = intent.getStringExtra(ITEM_DETAIL_DESC).toString()
         status = intent.getStringExtra(ITEM_DETAIL_STATUS).toString()
         uri = intent.getStringExtra(ITEM_DETAIL_IMGURI).toString()
+
+        toolbarItemDetail.setNavigationOnClickListener {
+            onBackPressed()
+
+        }
 
         firebaseAuth = FirebaseAuth.getInstance()
         tvName.setText(name)
