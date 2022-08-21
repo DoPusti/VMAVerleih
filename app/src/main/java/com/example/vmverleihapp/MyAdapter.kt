@@ -2,6 +2,7 @@ package com.example.vmverleihapp
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
@@ -91,6 +92,7 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
 
         return userFilterList.size
     }
+
 
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

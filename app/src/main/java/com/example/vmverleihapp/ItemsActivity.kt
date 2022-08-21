@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vmverleihapp.utils.SwipeToDeleteCallback
+import com.example.vmverleihapp.utils.SwipeToEditCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -104,18 +105,22 @@ class ItemsActivity : AppCompatActivity() {
             }
         })
 
-        /*
+
         val editSwipeHandler = object  : SwipeToEditCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = rvPlantList.adapter as PlantAdapter
-                adapter.notifyEditItem(this@MainActivity, viewHolder.adapterPosition,
-                    ADD_PLANT_ACTIVITY_REQUEST_CODE)
+                val intent = Intent(this@ItemsActivity,ItemDetailActivity::class.java)
+
+                intent.putExtra(ITEM_DETAIL_NAME,itemList[viewHolder.adapterPosition].name.toString())
+                intent.putExtra(ITEM_DETAIL_DESC,itemList[viewHolder.adapterPosition].description.toString())
+                intent.putExtra(ITEM_DETAIL_STATUS,itemList[viewHolder.adapterPosition].status.toString())
+                intent.putExtra(ITEM_DETAIL_IMGURI,itemList[viewHolder.adapterPosition].imgUri.toString())
+                startActivity(intent)
             }
 
         }
         val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
-        editItemTouchHelper.attachToRecyclerView(rvPlantList)
-        */
+        editItemTouchHelper.attachToRecyclerView(userRecyclerView)
+
 
 
         val deleteSwipeHandler = object  : SwipeToDeleteCallback(this) {
