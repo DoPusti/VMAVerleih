@@ -2,9 +2,13 @@ package com.example.vmverleihapp
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,7 +17,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -23,9 +26,11 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.android.synthetic.main.activity_add_items.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 
 
 class EditProfileActivity : AppCompatActivity() {
@@ -81,8 +86,8 @@ class EditProfileActivity : AppCompatActivity() {
         buDeleteUser.setOnClickListener {
 
             Log.i("Delete User", "PositivButton gedrückt")
-            val intent = Intent(this@EditProfileActivity,DeleteUserActivity::class.java)
-            startActivityForResult(intent, DELETE_USER_REQUEST_CODE )
+            val intent = Intent(this@EditProfileActivity, DeleteUserActivity::class.java)
+            startActivityForResult(intent, DELETE_USER_REQUEST_CODE)
             progressBar.visibility = View.VISIBLE
 
         }
@@ -140,6 +145,8 @@ class EditProfileActivity : AppCompatActivity() {
 
         }
         buUpdateProfil.setOnClickListener {
+            uploadImage()
+            /*
             updateProfil(
                 et_first_name.text.toString(),
                 et_last_name.text.toString(),
@@ -147,16 +154,55 @@ class EditProfileActivity : AppCompatActivity() {
             )
 
 
+             */
+
         }
 
     }
 
+    private fun uploadImage() {
+        if (filePath != null) {
+            val progressDialog = ProgressDialog(this)
+            progressDialog.setMessage("Inserat wird hochgeladen...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            val uuid = UUID.randomUUID().toString()
+            val ref = storageReference?.child("myImages/$uuid")
+            ref?.putFile(filePath!!)?.addOnSuccessListener {
+                Toast.makeText(
+                    this@EditProfileActivity,
+                    "Erfolgreich hochgeladen!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                if (progressDialog.isShowing) progressDialog.dismiss()
+            }
+                ?.addOnFailureListener {
+                    if (progressDialog.isShowing) progressDialog.dismiss()
+                    Toast.makeText(
+                        this@EditProfileActivity,
+                        "Fehler beim Hochladen",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            updateProfil(
+                et_first_name.text.toString(),
+                et_last_name.text.toString(),
+                et_contact_no.text.toString(),
+                uuid
+            )
+
+        } else {
+            Toast.makeText(this, "Please Upload an Image", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun launchGallery() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Picture"),
             PICK_IMAGE_REQUEST
         )
     }
@@ -232,6 +278,7 @@ class EditProfileActivity : AppCompatActivity() {
                             et_first_name.setText(profil.vorname.toString())
                             et_last_name.setText(profil.nachname.toString())
                             et_contact_no.setText(profil.contact.toString())
+                            getImageUri(profil!!.imgUri.toString())
                         }
                     }
                 }
@@ -247,8 +294,25 @@ class EditProfileActivity : AppCompatActivity() {
 
 
     }
+    private fun getImageUri(inUri : String) {
+        val storageRef =
+        FirebaseStorage.getInstance().reference.child("myImages/${inUri}")
+        Log.i("IMAGE", storageRef.toString())
+        val localFile = File.createTempFile("tempImage", "jpg")
+        storageRef.getFile(localFile).addOnSuccessListener {
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            editProfilImage.setImageBitmap(bitmap)
+        }.addOnFailureListener {
+            Log.e("EditUser", "Fehler beim Laden des Bildes$storageRef")
+        }
+    }
 
-    private fun updateProfil(inFirstName: String, inLastName: String, inContact: String) {
+    private fun updateProfil(
+        inFirstName: String,
+        inLastName: String,
+        inContact: String,
+        inUuid: String
+    ) {
 
         dbref =
             FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -260,7 +324,6 @@ class EditProfileActivity : AppCompatActivity() {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
                         val profil = userSnapshot.getValue(Profil::class.java)
-                        val uuid = ""
 
                         if (profil!!.email == firebaseAuth.currentUser!!.email.toString()) {
                             /*
@@ -298,7 +361,7 @@ class EditProfileActivity : AppCompatActivity() {
                             profil.contact = inContact
                             profil.nachname = inLastName
                             profil.vorname = inFirstName
-                            profil.imgUri = uuid
+                            profil.imgUri = inUuid
 
                             userSnapshot!!.key?.let {
                                 dbref.child(it).setValue(profil).addOnCompleteListener {
@@ -333,8 +396,34 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
+    // Der Pfad wird zurückgegeben und eine Bitmap eingegeben
+    private fun saveImageToInternalStorage(bitmap: Bitmap): Uri {
+        // Schnittstelle
+        val wrapper = ContextWrapper(applicationContext)
+
+        // Kann nur mit der App zugegriffen werden. Ist der Pfadname
+        var file = wrapper.getDir(IMAGE_DIRECTORY, Context.MODE_PRIVATE)
+        // Name des Bildes (zufällige Zeichenfolge als png)
+        file = File(file, "${UUID.randomUUID()}.jpg")
+
+        try {
+            // Stream um die Datei speichern zu können
+            val stream = FileOutputStream(file)
+            // Komprimieren als JPEG
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.flush()
+            stream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return Uri.parse(file.absolutePath)
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.i("Add User", resultCode.toString())
+        Log.i("Add User", requestCode.toString())
+        Log.i("Add User", data.toString())
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -343,10 +432,11 @@ class EditProfileActivity : AppCompatActivity() {
             }
             if (requestCode == CAMERA) {
                 val photoBitmap: Bitmap = data!!.extras!!.get("data") as Bitmap
+                filePath = saveImageToInternalStorage(photoBitmap)
                 editProfilImage.setImageBitmap(photoBitmap)
 
             }
-            if(requestCode == DELETE_USER_REQUEST_CODE) {
+            if (requestCode == DELETE_USER_REQUEST_CODE) {
 
             }
             if (requestCode == PICK_IMAGE_REQUEST) {
@@ -357,7 +447,7 @@ class EditProfileActivity : AppCompatActivity() {
                 filePath = data.data
                 try {
                     val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
-                    Log.i("EditProfileActitivty",bitmap.toString())
+                    Log.i("EditProfileActitivty", bitmap.toString())
                     editProfilImage.setImageBitmap(bitmap)
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -374,6 +464,7 @@ class EditProfileActivity : AppCompatActivity() {
         private const val CAMERA = 3
         private const val DELETE_USER_REQUEST_CODE = 4
         private const val PICK_IMAGE_REQUEST = 5
+        private const val IMAGE_DIRECTORY = "ProfileImage"
 
     }
 }
