@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vmverleihapp.utils.SwipeToDeleteCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -104,18 +105,6 @@ class ItemsActivity : AppCompatActivity() {
         })
 
         /*
-        rvPlantList.adapter = plantAdaper
-
-        plantAdaper.setOnClickListener(object : PlantAdapter.OnClickListener {
-            override fun onClick(position: Int, model: PlantModel) {
-                val intent = Intent(this@MainActivity, PlantDetailActivity::class.java)
-                intent.putExtra(PLANT_OBJECT_DETAILS,model)
-                startActivity(intent)
-            }
-        })
-        */
-
-        /*
         val editSwipeHandler = object  : SwipeToEditCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = rvPlantList.adapter as PlantAdapter
@@ -126,20 +115,22 @@ class ItemsActivity : AppCompatActivity() {
         }
         val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
         editItemTouchHelper.attachToRecyclerView(rvPlantList)
+        */
 
 
         val deleteSwipeHandler = object  : SwipeToDeleteCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = rvPlantList.adapter as PlantAdapter
+                val adapter = userRecyclerView.adapter as MyAdapter
                 adapter.removeAt(viewHolder.adapterPosition)
-                getPlantListFromLocalDB()
+
+                getUserData()
             }
 
         }
         val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
-        deleteItemTouchHelper.attachToRecyclerView(rvPlantList)
+        deleteItemTouchHelper.attachToRecyclerView(userRecyclerView)
 
-         */
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

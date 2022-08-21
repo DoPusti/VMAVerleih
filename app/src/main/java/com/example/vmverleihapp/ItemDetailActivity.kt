@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_add_items.*
 import kotlinx.android.synthetic.main.activity_item_detail.*
 import java.io.File
 
@@ -87,7 +86,20 @@ class ItemDetailActivity : AppCompatActivity() {
             Log.e("Adapter", "Fehler beim Laden des Bildes$storageRef")
         }
         buDelete.setOnClickListener {
-            deleteItem()
+            val deleteItemClass = DeleteItem(
+                firebaseAuth.currentUser!!.email.toString(),
+                name,
+                description,
+                status,
+                uri
+            )
+            if(deleteItemClass.deleteItem() == 0) {
+                Toast.makeText(this, "Inserat wurde erfolgreich gelöscht", Toast.LENGTH_SHORT).show()
+                setResult(Activity.RESULT_OK)
+                finish()
+            } else {
+                Toast.makeText(this, "Fehler beim Löschen", Toast.LENGTH_SHORT).show()
+            }
         }
         buUpdate.setOnClickListener {
             updateItem()
@@ -97,47 +109,8 @@ class ItemDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun deleteItem() {
-        Log.i("Delete User", "DeleteUserData wird gestartet")
-        dbref =
-            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("Users")
-        dbref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (userSnapshot in snapshot.children) {
-                        val userItems = userSnapshot.getValue(UserAuth::class.java)
-                        if (userItems!!.mail == firebaseAuth.currentUser!!.email.toString()
-                            && userItems.name == name && userItems.description == description
-                            && userItems.status == status && userItems.imgUri == uri
-                        ) {
-                            val storageUri = userItems.imgUri
-                            Log.i("Delete Item", "MailEintrag gefunden")
-                            try {
-                                userSnapshot.ref.removeValue()
-                            } catch (e: NullPointerException) {
-                                Log.e("Delete Item", "Nullpointerexcpetion $e")
-                            }
-                            deleteStorageUri(storageUri.toString())
-
-                        }
-                    }
-                }
-
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
-    }
-
-
     private fun updateItem() {
-        Log.i("ItemUpdate","Update wurde geklickt")
+        Log.i("ItemUpdate", "Update wurde geklickt")
         dbref =
             FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
                 .getReference("Users")
@@ -163,9 +136,9 @@ class ItemDetailActivity : AppCompatActivity() {
                                 userUpdate.description = tvDescription.text.toString()
                                 userUpdate.status = spinnerStatus.text.toString()
 
-                                Log.i("ItemUpdate",userUpdate.name.toString() )
-                                Log.i("ItemUpdate",userUpdate.description.toString() )
-                                Log.i("ItemUpdate",userUpdate.status.toString() )
+                                Log.i("ItemUpdate", userUpdate.name.toString())
+                                Log.i("ItemUpdate", userUpdate.description.toString())
+                                Log.i("ItemUpdate", userUpdate.status.toString())
 
                                 userSnapshot!!.key?.let {
                                     dbref.child(it).setValue(userUpdate).addOnCompleteListener {
@@ -202,26 +175,7 @@ class ItemDetailActivity : AppCompatActivity() {
         })
     }
 
-    private fun deleteStorageUri(inImageUri: String) {
-        // Create a storage reference from our app
-        val storageReference = FirebaseStorage.getInstance().reference
-
-        // Create a reference to the file to delete
-        val desertRef = storageReference.child("myImages/$inImageUri")
-
-        // Delete the file
-        desertRef.delete().addOnSuccessListener {
-            Toast.makeText(this, "Inserat wurde erfolgreich gelöscht", Toast.LENGTH_SHORT).show()
-            Log.i("Delete User", "Erfolgreiches Löschen von $inImageUri")
-            setResult(Activity.RESULT_OK)
-            finish()
-        }.addOnFailureListener {
-            Log.i("Delete User", "Fehler beim Löschen von $inImageUri")
-        }
-
-    }
-
-    companion object {
+   companion object {
         private const val ITEM_DETAIL_NAME = "ITEM_DETAIL_NAME"
         private const val ITEM_DETAIL_DESC = "ITEM_DETAIL_DESC"
         private const val ITEM_DETAIL_STATUS = "ITEM_DETAIL_STATUS"
