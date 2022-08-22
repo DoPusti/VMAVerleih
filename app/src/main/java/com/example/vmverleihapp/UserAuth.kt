@@ -5,5 +5,6 @@ data class UserAuth(
     var description: String? = null,
     var mail: String? = null,
     var status: String? = null,
-    var imgUri : String? = null
+    var imgUri : String? = null,
+    var userId : String? = null
 )

@@ -6,5 +6,6 @@ class DatabaseModel(
     var user: String,
     var mail: String,
     var imgUri: String,
-    var status : String
+    var status : String,
+    var userid : String,
 )

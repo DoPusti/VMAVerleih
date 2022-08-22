@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var messagesIcon: MenuItem
 
-    val latestMessagesHashMap : HashMap<String, Boolean> = HashMap<String, Boolean> ()
+    private var latestMessagesHashMap = HashMap<String, Boolean> ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +53,17 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main_menu, menu)
 
         messagesIcon = menu?.children?.toList()?.get(1)!!
+
+        val latestMessagedRead = latestMessagesHashMap.values.toList()
+        val predicate: (Boolean) -> Boolean = { !it }
+        val anyUnreadMessages = latestMessagedRead.any(predicate)
+        if (anyUnreadMessages)
+        {
+            messagesIcon.setIcon(R.drawable.ic_message_red_dot_black_24dp)
+        }
+        else {
+            messagesIcon.setIcon(R.drawable.ic_message_black_24dp)
+        }
 
         return true
     }
@@ -127,6 +138,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshMessagesIcon()
     {
+        if (!this::messagesIcon.isInitialized) { return }
+
         val latestMessagedRead = latestMessagesHashMap.values.toList()
         val predicate: (Boolean) -> Boolean = { !it }
         val anyUnreadMessages = latestMessagedRead.any(predicate)
@@ -201,6 +214,7 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra(ITEM_DETAIL_DESC,itemList[position].description.toString())
                 intent.putExtra(ITEM_DETAIL_STATUS,itemList[position].status.toString())
                 intent.putExtra(ITEM_DETAIL_IMGURI,itemList[position].imgUri.toString())
+                intent.putExtra(ITEM_DETAIL_USERID,itemList[position].userid.toString())
                 startActivity(intent)
             }
         })
@@ -237,6 +251,7 @@ class MainActivity : AppCompatActivity() {
         private const val ITEM_DETAIL_DESC = "ITEM_DETAIL_DESC"
         private const val ITEM_DETAIL_STATUS = "ITEM_DETAIL_STATUS"
         private const val ITEM_DETAIL_IMGURI = "ITEM_DETAIL_IMGURI"
+        private const val ITEM_DETAIL_USERID = "ITEM_DETAIL_USERID"
 
     }
 }

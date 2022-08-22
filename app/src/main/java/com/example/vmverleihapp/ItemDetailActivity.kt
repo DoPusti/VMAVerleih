@@ -130,7 +130,8 @@ class ItemDetailActivity : AppCompatActivity() {
                                     description,
                                     userItems.mail,
                                     status,
-                                    userItems.imgUri
+                                    userItems.imgUri,
+                                    userItems.userId
                                 )
                                 userUpdate.name = tvName.text.toString()
                                 userUpdate.description = tvDescription.text.toString()

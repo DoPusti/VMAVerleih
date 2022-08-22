@@ -38,18 +38,18 @@ class ChatsActivity : AppCompatActivity() {
 
             val intent = Intent(view.context, ChatLogActivity::class.java)
             val chatUserItem = item as LatestMessageItem
-            val toId = chatUserItem.toId
+            val userId = FirebaseAuth.getInstance().uid
 
-            val fromId = FirebaseAuth.getInstance().uid
-            val ref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$fromId/$toId")
+            val partnerId = chatUserItem.toId
+
+            val ref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$userId/$partnerId")
             ref.child("read").setValue(true)
 
-            var user = userHashMap[toId]
+            var user = userHashMap[partnerId]
 
             intent.putExtra(USER_KEY, user)
             startActivity(intent)
 
-            //finish()
         }
 
         getUserData()
@@ -62,7 +62,7 @@ class ChatsActivity : AppCompatActivity() {
         latestMessagesHashMap.values.sortedByDescending { i -> i.second.timestamp }.forEach {
             if (userHashMap.containsKey(it.first)){
                 var user = userHashMap[it.first]
-                var latestMessage = LatestMessageItem(it.second.text, it.second.timestamp, user?.nachname!!,it.second.toId)
+                var latestMessage = LatestMessageItem(it.second.text, it.second.timestamp, user?.nachname!!,it.first)
                 adapter.add(latestMessage)
             }
         }

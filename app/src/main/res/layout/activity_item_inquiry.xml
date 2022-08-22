@@ -148,12 +148,15 @@
                 tools:text="Verfügbar">
 
             </TextView>
+
             <Button
                 android:id="@+id/buInquiry"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/shape_button_rounded"
                 android:gravity="center"
                 android:paddingTop="10dp"
@@ -161,9 +164,9 @@
                 android:text="ANFRAGEN"
                 android:textColor="@color/white"
                 android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

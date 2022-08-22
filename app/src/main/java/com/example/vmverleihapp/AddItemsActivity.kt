@@ -221,8 +221,9 @@ class AddItemsActivity : AppCompatActivity() {
         val user = firebaseAuth.currentUser.toString()
         val email = firebaseAuth.currentUser!!.email.toString()
         val status = "Verfügbar"
-        if (name.isNotEmpty() && description.isNotEmpty()) {
-            val model = DatabaseModel(name, description, user, email, ImageUUID, status)
+        val userId = FirebaseAuth.getInstance().uid;
+        if (name.isNotEmpty() && description.isNotEmpty() && userId!!.isNotEmpty()) {
+            val model = DatabaseModel(name, description, user, email, ImageUUID, status, userId)
             val id = referance.push().key
             referance.child(id!!).setValue(model)
         } else {
