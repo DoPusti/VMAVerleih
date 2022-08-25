@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.vmverleihapp.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_items.*
 import kotlinx.android.synthetic.main.activity_items.tvNoRecordsAvailable
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var messagesIcon: MenuItem
+    private lateinit var searchMenuItem: SearchView
 
     private var latestMessagesHashMap = HashMap<String, Boolean> ()
 
@@ -53,6 +54,30 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main_menu, menu)
 
         messagesIcon = menu?.children?.toList()?.get(1)!!
+        var searchIcon = menu?.children?.toList()?.get(0)!!
+        searchMenuItem = searchIcon.actionView as SearchView
+
+        searchMenuItem.setOnSearchClickListener(View.OnClickListener {
+            // TODO ToolBar vertikal vergrößern & mögliche Filter einblenden
+        } )
+
+        searchMenuItem.setOnCloseListener(SearchView.OnCloseListener {
+            // TODO Filter abwählen und ToolBar vertikal verkleinern
+            return@OnCloseListener false
+        })
+
+
+        searchMenuItem.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                // TODO RecylcerView filtern
+               return false
+            }
+            })
 
         val latestMessagedRead = latestMessagesHashMap.values.toList()
         val predicate: (Boolean) -> Boolean = { !it }
