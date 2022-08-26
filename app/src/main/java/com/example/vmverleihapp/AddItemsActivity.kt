@@ -28,6 +28,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_add_items.*
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -40,7 +41,6 @@ class AddItemsActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private var firebaseStore: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
-    private var saveImageToInternalStorage: Uri? = null
 
     private var filePath: Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -234,9 +234,9 @@ class AddItemsActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.i("Add Item",resultCode.toString())
-        Log.i("Add Item",requestCode.toString())
-        Log.i("Add Item",data.toString())
+        Log.i("Add Item", resultCode.toString())
+        Log.i("Add Item", requestCode.toString())
+        Log.i("Add Item", data.toString())
         @Suppress("DEPRECATION")
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST) {
@@ -246,29 +246,23 @@ class AddItemsActivity : AppCompatActivity() {
 
                 filePath = data.data
                 try {
-                    Log.i("Add Item",filePath.toString())
+                    Log.i("Add Item", filePath.toString())
                     val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
                     ivPlaceImage.setImageBitmap(bitmap)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
+            } else if (requestCode == CAMERA) {
+                val photoBitmap: Bitmap = data!!.extras!!.get("data") as Bitmap
+                filePath = saveImageToInternalStorage(photoBitmap)
+                Log.e("Saved Image: ", "Path: $filePath")
+                ivPlaceImage.setImageBitmap(photoBitmap)
             }
-         } else if (requestCode == CAMERA) {
-            val photoBitmap: Bitmap = data!!.extras!!.get("data") as Bitmap
-            saveImageToInternalStorage = saveImageToInternalStorage(photoBitmap)
-            Log.e("Saved Image: ", "Path: $saveImageToInternalStorage")
-            /* Beispielausgabe :
-
-            Saved Image:: Path: /data/user/0/com.example.vmagardener/app_PlantsImages/b963386c-a5e9-405f-9a85-4412252d447e.jpg
-
-             */
-            ivPlaceImage.setImageBitmap(photoBitmap)
-         }
-            else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.e("Cancelled", "Cancelled")
-            }
-
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.e("Cancelled", "Cancelled")
         }
+
+    }
 
         companion object {
             // Codes für Intent onActivityResult
