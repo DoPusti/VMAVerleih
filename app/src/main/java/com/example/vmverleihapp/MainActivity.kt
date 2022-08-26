@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         Log.i("UserMain", firebaseAuth.currentUser.toString())
 
-
         getAllData()
         listenForLatestMessages()
 
@@ -74,7 +72,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                // TODO RecylcerView filtern
+                // TODO RecyclerView Filtern
+                //userRecyclerView.adapter.getFilter(newText)
                return false
             }
             })

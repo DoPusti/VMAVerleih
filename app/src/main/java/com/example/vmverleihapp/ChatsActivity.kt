@@ -1,11 +1,13 @@
 package com.example.vmverleihapp
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -14,7 +16,9 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_chat_log.*
 import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.activity_chats.toolbar
+import kotlinx.android.synthetic.main.activity_item_detail.*
 import kotlinx.android.synthetic.main.chat_user_row.view.*
+import java.io.File
 import java.util.*
 
 class ChatsActivity : AppCompatActivity() {
@@ -163,7 +167,12 @@ class LatestMessageItem(val latestMessage: String, val timestamp: Long, val nach
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(ChatUser::class.java)
                 if (user!= null && user.imgUri.isNotEmpty()) {
-                    Picasso.get().load(user.imgUri).into(viewHolder.itemView.chat_image)
+                    val storageRef = FirebaseStorage.getInstance().reference.child("myImages/${user.imgUri}")
+                    val localFile = File.createTempFile("tempImage", "jpg")
+                    storageRef.getFile(localFile).addOnSuccessListener {
+                        val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                        viewHolder.itemView.chat_image.setImageBitmap(bitmap)
+                    }
                 }
             }
 
