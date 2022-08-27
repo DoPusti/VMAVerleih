@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_items.tvNoRecordsAvailable
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.user_item.*
 
 class MainActivity : AppCompatActivity() {
 
