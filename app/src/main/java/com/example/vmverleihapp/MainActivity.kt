@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_items.tvNoRecordsAvailable
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.user_item.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,9 +28,10 @@ class MainActivity : AppCompatActivity() {
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var messagesIcon: MenuItem
+    lateinit var adapter: MyAdapter
     private lateinit var searchMenuItem: SearchView
 
-    private var latestMessagesHashMap = HashMap<String, Boolean> ()
+    private var latestMessagesHashMap = HashMap<String, Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         Log.i("UserMain", firebaseAuth.currentUser.toString())
 
-        getAllData()
+        getAllData("")
         listenForLatestMessages()
 
     }
@@ -58,10 +58,11 @@ class MainActivity : AppCompatActivity() {
 
         searchMenuItem.setOnSearchClickListener(View.OnClickListener {
             // TODO ToolBar vertikal vergrößern & mögliche Filter einblenden
-        } )
+        })
 
         searchMenuItem.setOnCloseListener(SearchView.OnCloseListener {
             // TODO Filter abwählen und ToolBar vertikal verkleinern
+            getAllData("")
             return@OnCloseListener false
         })
 
@@ -74,19 +75,17 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 // TODO RecyclerView Filtern
-                //userRecyclerView.adapter.getFilter(newText)
-               return false
+                getAllData(newText)
+                return false
             }
-            })
+        })
 
         val latestMessagedRead = latestMessagesHashMap.values.toList()
         val predicate: (Boolean) -> Boolean = { !it }
         val anyUnreadMessages = latestMessagedRead.any(predicate)
-        if (anyUnreadMessages)
-        {
+        if (anyUnreadMessages) {
             messagesIcon.setIcon(R.drawable.ic_message_red_dot_black_24dp)
-        }
-        else {
+        } else {
             messagesIcon.setIcon(R.drawable.ic_message_black_24dp)
         }
 
@@ -95,16 +94,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when (item?.itemId){
-        R.id.user -> {
-            val intent = Intent(this, EditProfileActivity::class.java)
-            @Suppress("DEPRECATION")
-            startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_REQUEST_CODE)}
+        when (item?.itemId) {
+            R.id.user -> {
+                val intent = Intent(this, EditProfileActivity::class.java)
+                @Suppress("DEPRECATION")
+                startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_REQUEST_CODE)
+            }
 
-        R.id.chats -> {
-            val intent = Intent(this, ChatsActivity::class.java)
-            @Suppress("DEPRECATION")
-            startActivity(intent)}
+            R.id.chats -> {
+                val intent = Intent(this, ChatsActivity::class.java)
+                @Suppress("DEPRECATION")
+                startActivity(intent)
+            }
         }
 
 
@@ -116,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_PROFILE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                getAllData()
+                getAllData("")
             } else {
                 Log.e("Activity", "Abgebrochen oder zurück gedrückt")
             }
@@ -125,7 +126,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun getAllData() {
+    private fun getAllData(inText: String) {
 
         userArrayList = ArrayList<User>()
         dbref =
@@ -139,15 +140,22 @@ class MainActivity : AppCompatActivity() {
                     for (userSnapshot in snapshot.children) {
                         val user = userSnapshot.getValue(User::class.java)
                         if (user != null) {
-                            userArrayList.add(user)
+                            if (inText.isNotEmpty()) {
+                                if (user.name!!.contains(inText)) {
+                                    userArrayList.add(user)
+                                }
+                            } else {
+                                userArrayList.add(user)
+                            }
+
                         }
 
                     }
                 }
-                if(userArrayList.size > 0) {
+                if (userArrayList.size > 0) {
                     allList.visibility = View.VISIBLE
                     tvNoRecordsAvailable.visibility = View.GONE
-                    setupItemRecyclerView(userArrayList)
+                    setupItemRecyclerView(userArrayList, "", "")
                 } else {
                     allList.visibility = View.GONE
                     tvNoRecordsAvailable.visibility = View.VISIBLE
@@ -161,29 +169,30 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun refreshMessagesIcon()
-    {
-        if (!this::messagesIcon.isInitialized) { return }
+    private fun refreshMessagesIcon() {
+        if (!this::messagesIcon.isInitialized) {
+            return
+        }
 
         val latestMessagedRead = latestMessagesHashMap.values.toList()
         val predicate: (Boolean) -> Boolean = { !it }
         val anyUnreadMessages = latestMessagedRead.any(predicate)
 
-        if (anyUnreadMessages)
-        {
+        if (anyUnreadMessages) {
             messagesIcon.setIcon(R.drawable.ic_message_red_dot_black_24dp)
-        }
-        else {
+        } else {
             messagesIcon.setIcon(R.drawable.ic_message_black_24dp)
         }
     }
 
-    private fun listenForLatestMessages(){
+    private fun listenForLatestMessages() {
 
         val fromId = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/").getReference("LatestMessages/$fromId")
+        val ref =
+            FirebaseDatabase.getInstance("https://vmaverleihapp-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("LatestMessages/$fromId")
 
-        ref.addChildEventListener(object: ChildEventListener {
+        ref.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val message = snapshot.getValue(ChatMessage::class.java)
                 setMessage(snapshot.key!!, message)
@@ -204,17 +213,15 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
             }
 
-            private fun setMessage(id: String, message: ChatMessage?)
-            {
-                if (message != null){
+            private fun setMessage(id: String, message: ChatMessage?) {
+                if (message != null) {
                     latestMessagesHashMap[id] = message.read
                     refreshMessagesIcon()
                 }
             }
 
-            private fun removeMessage(id: String)
-            {
-                if ( latestMessagesHashMap.containsKey(id)){
+            private fun removeMessage(id: String) {
+                if (latestMessagesHashMap.containsKey(id)) {
                     latestMessagesHashMap.remove(id)
                 }
                 refreshMessagesIcon()
@@ -224,50 +231,33 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun setupItemRecyclerView(itemList: ArrayList<User>) {
+    private fun setupItemRecyclerView(
+        itemList: ArrayList<User>,
+        inSearchString: String,
+        inTrigger: String
+    ) {
         userRecyclerView = findViewById(R.id.allList)
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.setHasFixedSize(true)
         userArrayList = arrayListOf()
-        val itemAdapter = MyAdapter(this,itemList)
+        val itemAdapter = MyAdapter(this, itemList)
+        itemAdapter.filter.filter(inSearchString)
         userRecyclerView.adapter = itemAdapter
-        itemAdapter.setOnClickListener(object: MyAdapter.OnClickListener{
+
+
+        itemAdapter.setOnClickListener(object : MyAdapter.OnClickListener {
             override fun onClick(position: Int, model: User) {
-                Log.i("OnCliCk",itemList[position].name.toString())
-                val intent = Intent(this@MainActivity,ItemInquiryActivity::class.java)
-                intent.putExtra(ITEM_DETAIL_NAME,itemList[position].name.toString())
-                intent.putExtra(ITEM_DETAIL_DESC,itemList[position].description.toString())
-                intent.putExtra(ITEM_DETAIL_STATUS,itemList[position].status.toString())
-                intent.putExtra(ITEM_DETAIL_IMGURI,itemList[position].imgUri.toString())
-                intent.putExtra(ITEM_DETAIL_USERID,itemList[position].userid.toString())
+                Log.i("OnCliCk", itemList[position].name.toString())
+                val intent = Intent(this@MainActivity, ItemInquiryActivity::class.java)
+                intent.putExtra(ITEM_DETAIL_NAME, itemList[position].name.toString())
+                intent.putExtra(ITEM_DETAIL_DESC, itemList[position].description.toString())
+                intent.putExtra(ITEM_DETAIL_STATUS, itemList[position].status.toString())
+                intent.putExtra(ITEM_DETAIL_IMGURI, itemList[position].imgUri.toString())
+                intent.putExtra(ITEM_DETAIL_USERID, itemList[position].userid.toString())
                 startActivity(intent)
             }
         })
-        /*
-        val editSwipeHandler = object  : SwipeToEditCallback(this) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = rvPlantList.adapter as PlantAdapter
-                adapter.notifyEditItem(this@MainActivity, viewHolder.adapterPosition,
-                    ADD_PLANT_ACTIVITY_REQUEST_CODE)
-            }
 
-        }
-        val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
-        editItemTouchHelper.attachToRecyclerView(rvPlantList)
-
-
-        val deleteSwipeHandler = object  : SwipeToDeleteCallback(this) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapter = rvPlantList.adapter as PlantAdapter
-                adapter.removeAt(viewHolder.adapterPosition)
-                getPlantListFromLocalDB()
-            }
-
-        }
-        val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
-        deleteItemTouchHelper.attachToRecyclerView(rvPlantList)
-
-         */
     }
 
     companion object {

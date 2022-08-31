@@ -6,23 +6,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 open class MyAdapter(private val context: Context, private val userList: ArrayList<User>) :
-    RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+    RecyclerView.Adapter<MyAdapter.MyViewHolder>(),Filterable {
     private var onClickListener: OnClickListener? = null
 
     var userFilterList = ArrayList<User>()
+    // exampleListFull . exampleList
 
     init {
-        userFilterList = userList
+        userFilterList = userList as ArrayList<User>
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
@@ -59,7 +62,7 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-        val currentitem = userList[position]
+        val currentitem = userFilterList[position]
         if (holder is MyViewHolder) {
             holder.name.text = currentitem.name
             holder.beschreibung.text = currentitem.description
@@ -107,41 +110,41 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
 
         }
     }
-    /*
+
    // https://johncodeos.com/how-to-add-search-in-recyclerview-using-kotlin/
     override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val charSearch = constraint.toString()
-                if (charSearch.isEmpty()) {
-                    userFilterList = userList
-                } else {
-                    val resultList = ArrayList<String>()
-                    for (row in userList) {
-                        if (row.lowercase(Locale.ROOT)
-                                .contains(charSearch.lowercase(Locale.ROOT))
-                        ) {
-                            resultList.add(row.toString())
-                        }
-                    }
-                    userFilterList = resultList
-                }
-                val filterResults = FilterResults()
-                filterResults.values = userFilterList
-                return filterResults
-            }
-
-            @Suppress("UNCHECKED_CAST")
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-
-            }
-
-        }
-    }
-
-     */
-
-
-
-
+       return object : Filter() {
+           override fun performFiltering(constraint: CharSequence?): FilterResults {
+               val charSearch = constraint.toString()
+               if (charSearch.isEmpty()) {
+                   userFilterList = userList
+               } else {
+                   val resultList = ArrayList<User>()
+                   for (row in userList) {
+                       Log.i("SEARCH",row.name!!.toLowerCase(Locale.ROOT))
+                       Log.i("SEARCH",charSearch)
+                       if (row.name!!.toLowerCase().contains(constraint.toString().toLowerCase())) {
+                           resultList.add(row)
+                       }
+                   }
+                   userFilterList = resultList
+               }
+               val filterResults = FilterResults()
+               filterResults.values = userFilterList
+               return filterResults
+           }
+           @Suppress("UNCHECKED_CAST")
+           override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+               userFilterList = results?.values as ArrayList<User>
+               notifyDataSetChanged()
+           }
+       }
+   }
 }
+
+
+
+
+
+
+
