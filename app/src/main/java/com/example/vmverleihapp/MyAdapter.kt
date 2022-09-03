@@ -2,6 +2,7 @@ package com.example.vmverleihapp
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 open class MyAdapter(private val context: Context, private val userList: ArrayList<User>) :
-    RecyclerView.Adapter<MyAdapter.MyViewHolder>(),Filterable {
+    RecyclerView.Adapter<MyAdapter.MyViewHolder>(), Filterable {
     private var onClickListener: OnClickListener? = null
 
     var userFilterList = ArrayList<User>()
@@ -43,7 +43,7 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
         this.onClickListener = onClickListener
     }
 
-    fun removeAt(position: Int) : Int{
+    fun removeAt(position: Int): Int {
         var itemRC = 0
         val itemDelete = DeleteItem(
             "",
@@ -52,7 +52,7 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
             userList[position].status.toString(),
             userList[position].imgUri.toString()
         )
-        itemRC = if(itemDelete.deleteItem() == 0) {
+        itemRC = if (itemDelete.deleteItem() == 0) {
             0
         } else {
             100
@@ -67,6 +67,12 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
             holder.name.text = currentitem.name
             holder.beschreibung.text = currentitem.description
             holder.status.text = currentitem.status
+            if (holder.status.text == "Verfügbar") {
+                holder.status.setTextColor(Color.GREEN)
+
+            } else {
+                holder.status.setTextColor(Color.RED)
+            }
             // Bild aus Storage holen
             val storageRef =
                 FirebaseStorage.getInstance().reference.child("myImages/${currentitem.imgUri.toString()}")
@@ -95,7 +101,6 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
     }
 
 
-
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val name: TextView = itemView.findViewById(R.id.tvname)
@@ -111,35 +116,38 @@ open class MyAdapter(private val context: Context, private val userList: ArrayLi
         }
     }
 
-   // https://johncodeos.com/how-to-add-search-in-recyclerview-using-kotlin/
+    // https://johncodeos.com/how-to-add-search-in-recyclerview-using-kotlin/
     override fun getFilter(): Filter {
-       return object : Filter() {
-           override fun performFiltering(constraint: CharSequence?): FilterResults {
-               val charSearch = constraint.toString()
-               if (charSearch.isEmpty()) {
-                   userFilterList = userList
-               } else {
-                   val resultList = ArrayList<User>()
-                   for (row in userList) {
-                       Log.i("SEARCH",row.name!!.toLowerCase(Locale.ROOT))
-                       Log.i("SEARCH",charSearch)
-                       if (row.name!!.toLowerCase().contains(constraint.toString().toLowerCase())) {
-                           resultList.add(row)
-                       }
-                   }
-                   userFilterList = resultList
-               }
-               val filterResults = FilterResults()
-               filterResults.values = userFilterList
-               return filterResults
-           }
-           @Suppress("UNCHECKED_CAST")
-           override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-               userFilterList = results?.values as ArrayList<User>
-               notifyDataSetChanged()
-           }
-       }
-   }
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charSearch = constraint.toString()
+                if (charSearch.isEmpty()) {
+                    userFilterList = userList
+                } else {
+                    val resultList = ArrayList<User>()
+                    for (row in userList) {
+                        Log.i("SEARCH", row.name!!.toLowerCase(Locale.ROOT))
+                        Log.i("SEARCH", charSearch)
+                        if (row.name!!.toLowerCase()
+                                .contains(constraint.toString().toLowerCase())
+                        ) {
+                            resultList.add(row)
+                        }
+                    }
+                    userFilterList = resultList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = userFilterList
+                return filterResults
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                userFilterList = results?.values as ArrayList<User>
+                notifyDataSetChanged()
+            }
+        }
+    }
 }
 
 
