@@ -141,7 +141,10 @@ class MainActivity : AppCompatActivity() {
                         val user = userSnapshot.getValue(User::class.java)
                         if (user != null) {
                             if (inText.isNotEmpty()) {
-                                if (user.name!!.contains(inText)) {
+                                if (user.name!!.contains(inText)
+                                    or user.description!!.contains(inText)
+
+                                ) {
                                     userArrayList.add(user)
                                 }
                             } else {
