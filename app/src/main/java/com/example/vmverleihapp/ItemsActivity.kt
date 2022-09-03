@@ -114,7 +114,7 @@ class ItemsActivity : AppCompatActivity() {
                 intent.putExtra(ITEM_DETAIL_DESC,itemList[viewHolder.adapterPosition].description.toString())
                 intent.putExtra(ITEM_DETAIL_STATUS,itemList[viewHolder.adapterPosition].status.toString())
                 intent.putExtra(ITEM_DETAIL_IMGURI,itemList[viewHolder.adapterPosition].imgUri.toString())
-                startActivity(intent)
+                startActivityForResult(intent, ITEM_EDIT_REQUEST_CODE)
             }
 
         }
@@ -141,14 +141,16 @@ class ItemsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ITEM_ADD_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
+        if(resultCode == Activity.RESULT_OK) {
+            if (requestCode == ITEM_ADD_REQUEST_CODE) {
                 getUserData()
-            } else {
+            }
+            if (requestCode == ITEM_EDIT_REQUEST_CODE) {
+                getUserData()
+            }else {
                 Log.e("Activity", "Abgebrochen oder zurück gedrückt")
             }
         }
-
     }
 
     companion object {
@@ -158,6 +160,7 @@ class ItemsActivity : AppCompatActivity() {
         private const val ITEM_DETAIL_DESC = "ITEM_DETAIL_DESC"
         private const val ITEM_DETAIL_STATUS = "ITEM_DETAIL_STATUS"
         private const val ITEM_DETAIL_IMGURI = "ITEM_DETAIL_IMGURI"
+        private const val ITEM_EDIT_REQUEST_CODE = 5
 
     }
 }

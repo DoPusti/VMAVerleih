@@ -35,7 +35,10 @@ class ItemDetailActivity : AppCompatActivity() {
         uri = intent.getStringExtra(ITEM_DETAIL_IMGURI).toString()
 
         toolbarItemDetail.setNavigationOnClickListener {
+            setResult(Activity.RESULT_OK)
+            finish()
             onBackPressed()
+
 
         }
 
