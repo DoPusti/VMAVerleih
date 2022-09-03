@@ -52,6 +52,12 @@ class ItemInquiryActivity : AppCompatActivity() {
         }
         tvStatus.text = status
 
+        if(FirebaseAuth.getInstance().uid == userid) {
+            buInquiry.isEnabled = false
+            buInquiry.isClickable = false
+        }
+
+
         if(userid == firebaseAuth.uid){
             buInquiry.isVisible = false
         }
