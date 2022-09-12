@@ -33,7 +33,7 @@
         android:gravity="left"
         android:maxLines="4"
         android:padding="8dp"
-        android:text="Es ist möglich über Profile und eigene Inserate ein Inserat zu erstellen. Hierbei wird ein Bild, ein Title und eine mögliche Beschreibung benötigt."
+        android:text="Es ist möglich über Profile und eigene Inserate ein Inserat zu erstellen. Hierbei werden ein Bild, ein Title und eine mögliche Beschreibung benötigt."
         android:textColor="@color/black" />
     <TextView
         android:id="@+id/tvdesc2"
