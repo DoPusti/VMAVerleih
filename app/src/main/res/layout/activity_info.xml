@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".InfoActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarInfo"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar_background"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="8dp"
+        android:gravity="left"
+        android:text="Beschreibung">
+
+    </TextView>
+
+
+    <TextView
+        android:id="@+id/tvdesc1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:maxLines="4"
+        android:padding="8dp"
+        android:text="Es ist möglich über Profile und eigene Inserate ein Inserat zu erstellen. Hierbei wird ein Bild, ein Title und eine mögliche Beschreibung benötigt."
+        android:textColor="@color/black" />
+    <TextView
+        android:id="@+id/tvdesc2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:maxLines="4"
+        android:padding="8dp"
+        android:text="Sobald das Inserat online ist kann dies von einem Nutzer angefragt werden. Ein Klick auf der Hauptseite auf das jeweilige Inserat gibt die entsprechenden Informationen"
+        android:textColor="@color/black" />
+    <TextView
+        android:id="@+id/tvdesc3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:maxLines="4"
+        android:padding="8dp"
+        android:text="Wenn ein Inserat angefragt wird, kann mit dem jeweiligen Nutzer weiter über das Chat-Symbol (Toolbar oben auf Hauptseite) kommuniziert werden"
+        android:textColor="@color/black" />
+    <TextView
+        android:id="@+id/tvdesc4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:maxLines="4"
+        android:padding="8dp"
+        android:text="Die eigenen Inserate können jederzeit bearbeitet werden. Mit einer Wischgeste nach links werden sie gelöscht, mit rechts kann man sie bearbeiten und neu abspeichern."
+        android:textColor="@color/black" />
+    <TextView
+        android:id="@+id/tvdesc5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:maxLines="4"
+        android:padding="8dp"
+        android:text="Das Konto kann jederzeit gelöscht werden. Sobald dies geschieht, werden alle Bilder und jegliche Informationen zum Nutzer gemäß der DSGVO entfernt."
+        android:textColor="@color/black" />
+</LinearLayout>

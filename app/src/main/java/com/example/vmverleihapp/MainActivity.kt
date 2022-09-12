@@ -106,6 +106,11 @@ class MainActivity : AppCompatActivity() {
                 @Suppress("DEPRECATION")
                 startActivity(intent)
             }
+            R.id.info -> {
+                val intent = Intent(this, InfoActivity::class.java)
+                @Suppress("DEPRECATION")
+                startActivity(intent)
+            }
         }
 
 

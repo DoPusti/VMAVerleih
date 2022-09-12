@@ -18,4 +18,9 @@
         android:icon="@drawable/ic_user_black_24dp"
         android:title="Item"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/info"
+        android:icon="@drawable/ic_user_black_24dp"
+        android:title="Info"
+        app:showAsAction="ifRoom"/>
 </menu>

@@ -22,6 +22,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".InfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ItemInquiryActivity"
             android:exported="false" />
         <activity
@@ -54,7 +57,6 @@
             android:exported="true"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="stateHidden" />
-            android:screenOrientation="portrait" />
         <activity
             android:name=".SignInActivity"
             android:exported="true"
